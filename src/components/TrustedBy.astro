@@ -1,0 +1,177 @@
+---
+/**
+ * Carrusel “Confían en nosotros”: añade o cambia rutas en `logoPaths`.
+ * Las rutas son públicas: archivos en `public/img/` → `/img/archivo.png`
+ * El tono gris uniforme se logra con CSS (filter), sin editar los PNG.
+ */
+const logoPaths = [
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+  "/img/ksilogo.png",
+];
+
+const caption = "Empresas que confiaron en nosotros";
+---
+
+<section class="trusted-by" aria-label="Clientes y aliados">
+  <div class="trusted-by__marquee" role="presentation">
+    <div class="trusted-by__track">
+      <div class="trusted-by__group">
+        {
+          logoPaths.map((src) => (
+            <div class="trusted-by__item">
+              <img
+                class="trusted-by__logo"
+                src={src}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="160"
+                height="56"
+              />
+            </div>
+          ))
+        }
+      </div>
+      <div class="trusted-by__group" aria-hidden="true">
+        {
+          logoPaths.map((src) => (
+            <div class="trusted-by__item">
+              <img
+                class="trusted-by__logo"
+                src={src}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="160"
+                height="56"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <p class="trusted-by__caption">{caption}</p>
+</section>
+
+<style>
+  .trusted-by {
+    --trusted-bg: #000000;
+    --trusted-fade: 15%;
+    background: var(--trusted-bg);
+    padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3.25rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  }
+
+  /* Solo esta franja por encima del Spotlight (z-index 1): el resto de la página y el pie de texto no */
+  .trusted-by__marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: min(1200px, 100%);
+    padding: 0 clamp(0.5rem, 3vw, 1.5rem);
+    /* Bordes que se funden con el fondo, estilo referencia */
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--trusted-fade),
+      #000 calc(100% - var(--trusted-fade)),
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--trusted-fade),
+      #000 calc(100% - var(--trusted-fade)),
+      transparent
+    );
+  }
+
+  .trusted-by__track {
+    display: flex;
+    width: max-content;
+    animation: trusted-by-scroll 45s linear infinite;
+    will-change: transform;
+    
+  }
+
+  @keyframes trusted-by-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .trusted-by__group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+    padding-right: clamp(2.5rem, 6vw, 4.5rem);
+    
+  }
+
+  .trusted-by__item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  /* Color → gris homogéneo sin tocar el archivo; ajusta valores si un logo se ve muy claro u oscuro */
+  .trusted-by__logo {
+    display: block;
+    height: clamp(1.5rem, 3.5vw, 2.5rem);
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    object-position: center;
+    filter: grayscale(100%) brightness(2.5) contrast(0.75);
+    opacity: 0.8;
+    transition:
+      filter 0.35s ease,
+      opacity 0.35s ease;
+      
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .trusted-by__logo:hover {
+      filter: grayscale(0%) brightness(1) contrast(1);
+      opacity: 1;
+    }
+  }
+
+  .trusted-by__caption {
+    margin: clamp(1.25rem, 3vw, 1.75rem) auto 0;
+    max-width: 36rem;
+    padding: 2rem 1.25rem;
+    text-align: center;
+    font-family: var(--font-primary, "Satoshi", sans-serif);
+    font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgb(203, 200, 200);
+    line-height: 1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trusted-by__track {
+      animation: none;
+    }
+    .trusted-by__marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+  }
+</style>
