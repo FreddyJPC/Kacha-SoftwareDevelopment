@@ -1,7 +1,17 @@
 <nav class="header-container">
   <div class="header-content">
     <!-- LOGO -->
-    <a href="/" class="logo">kacha</a>
+    <a href="/" class="logo">
+      <img
+        src="/img/kachalogo.svg"
+        alt=""
+        width="40"
+        height="40"
+        class="logo-mark"
+        aria-hidden="true"
+      />
+      <span class="logo-text">KACHA</span>
+    </a>
 
     <!-- BOTÓN HAMBURGUESA -->
     <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
@@ -30,7 +40,6 @@
 <style>
   :root {
     --font-primary: 'Satoshi', sans-serif;
-    --font-extended: 'Chaney Extended', sans-serif;
     --color-accent: #00E599;
     --color-white: #fff;
     --glass-bg: rgba(13, 13, 13, 0.85);
@@ -73,11 +82,31 @@
 
   /* --- LOGO --- */
   .logo {
-    font-family: var(--font-extended);
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-primary);
+    font-size: 1.25rem;
+    font-weight: 900;
     color: var(--color-white);
     text-decoration: none;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .logo-mark {
+    display: block;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .logo-text {
+    line-height: 1;
+    text-shadow:
+      0.3px 0 0 currentColor,
+      -0.3px 0 0 currentColor,
+      0 0.22px 0 currentColor,
+      0 -0.22px 0 currentColor;
   }
 
   /* --- MENU TOGGLE (Móvil) --- */
