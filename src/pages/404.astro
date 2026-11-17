@@ -12,6 +12,7 @@ import { useTranslations } from '../i18n/ui';
 
 <Base title={useTranslations('es').notFound.title} noindex>
   <main data-intro class="theme-dark bg-bg text-fg shell relative min-h-svh flex flex-col justify-end pt-40 pb-20 overflow-hidden">
+    <div class="dots absolute inset-0" aria-hidden="true"></div>
     <Star class="star absolute -right-[10vw] -top-[10vw] w-[60vw] h-[60vw] max-w-[44rem] max-h-[44rem] text-accent/15" />
     {
       locales.map((lang) => {
@@ -20,7 +21,7 @@ import { useTranslations } from '../i18n/ui';
           <div class="relative" data-locale={lang} lang={lang} hidden={lang !== 'es'}>
             <p class="label label-star text-muted mb-8">{t.label}</p>
             <h1 class="display display-xl">
-              {t.heading[0]}<span class="accent text-accent">{t.heading[1]}</span>{t.heading[2]}<span class="dot">.</span>
+              {t.heading[0]}<span class="accent">{t.heading[1]}</span>{t.heading[2]}
             </h1>
             <p class="mt-8 text-xl text-muted max-w-md">{t.text}</p>
             <div class="mt-10 flex flex-wrap gap-3">

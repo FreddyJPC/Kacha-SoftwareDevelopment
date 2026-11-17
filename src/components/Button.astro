@@ -1,6 +1,6 @@
 ---
 /**
- * Botón píldora con texto que se desliza al pasar el cursor.
+ * Botón píldora: al pasar el cursor el fondo se llena desde abajo y la flecha se reemplaza.
  * variant: "solid" (por defecto) | "accent" | "dark" | "ghost"
  */
 interface Props {
@@ -12,20 +12,16 @@ interface Props {
   class?: string;
   [key: `data-${string}`]: string | undefined;
 }
-const { href, variant = 'solid', external = false, type = 'button', magnetic = true, class: cls = '', ...rest } = Astro.props;
+const { href, variant = 'solid', external = false, type = 'button', magnetic = false, class: cls = '', ...rest } = Astro.props;
 const Tag = href ? 'a' : 'button';
 const classes = ['btn', variant !== 'solid' && `btn-${variant}`, cls].filter(Boolean).join(' ');
 const attrs = href ? { href, ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) } : { type };
 ---
 
 <Tag class={classes} data-magnetic={magnetic ? '' : undefined} {...attrs} {...rest}>
-  <span class="btn-text">
-    <span><slot /></span>
-    <span aria-hidden="true"><slot /></span>
-  </span>
-  <span class="btn-icon" aria-hidden="true">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 12 12 4M5.5 4H12v6.5"></path>
-    </svg>
+  <span><slot /></span>
+  <span class="btn-arrow" aria-hidden="true">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"></path></svg>
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"></path></svg>
   </span>
 </Tag>

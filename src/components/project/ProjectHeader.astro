@@ -20,7 +20,7 @@ const meta = [
 ].filter((m) => m.v);
 ---
 
-<PageIntro label={t.label} title={d.title} size="lg" back={{ label: t.back, href: localePath(lang, 'projects') }}>
+<PageIntro label={t.label} title={d.title} size="lg" crumbs={[{ label: useTranslations(lang).nav.projects, href: localePath(lang, 'projects') }]}>
   {d.summary}
   <Fragment slot="after">
     <dl class="mt-14 lg:mt-20 grid grid-cols-2 md:grid-cols-4 xl:flex xl:justify-between gap-x-8 gap-y-8 border-t border-line pt-8" data-reveal-group data-delay="0.35">

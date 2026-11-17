@@ -98,8 +98,8 @@ export function initPointer(signal: AbortSignal, reduced: boolean) {
       'pointermove',
       (e) => {
         const r = hero.getBoundingClientRect();
-        gx(((e.clientX - r.left) / r.width - 0.5) * 140);
-        gy(((e.clientY - r.top) / r.height - 0.5) * 90);
+        gx(((e.clientX - r.left) / r.width - 0.5) * 36);
+        gy(((e.clientY - r.top) / r.height - 0.5) * 24);
       },
       { signal, passive: true },
     );

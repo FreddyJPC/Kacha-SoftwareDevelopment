@@ -1,69 +1,102 @@
 ---
-/** Preguntas frecuentes. Recibe la lista (por defecto, la general de src/data/faq.ts). */
+/**
+ * Preguntas frecuentes: cabecera centrada y preguntas en dos columnas con número.
+ * Recibe la lista (por defecto, la general de src/data/faq.ts).
+ */
 import { faq as general } from '../data/faq';
 import { getLang, localePath } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
+import { twoDigits } from '../lib/projects';
 import Button from './Button.astro';
+import SectionHead from './SectionHead.astro';
 
 interface Props {
   items?: { q: string; a: string }[];
-  title?: string;
+  title?: string | [string, string, string];
   intro?: string;
   id?: string;
 }
 const lang = getLang(Astro);
 const t = useTranslations(lang);
-const { items = general[lang], title = t.faq.title, intro = t.faq.intro, id = t.ids.faq } = Astro.props;
+const { items = general[lang], title = t.faq.heading, intro = t.faq.intro, id = t.ids.faq } = Astro.props;
+// Dos columnas independientes: abrir una pregunta no estira la de al lado
+const half = Math.ceil(items.length / 2);
+const columns = [items.slice(0, half), items.slice(half)].filter((c) => c.length);
 ---
 
-<section id={id} class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby={`${id}-title`}>
-  <div class="grid grid-cols-12 gap-x-6 gap-y-12">
-    <div class="col-span-12 lg:col-span-5">
-      <div class="lg:sticky lg:top-28">
-        <span class="label label-star text-muted mb-8" data-reveal>{t.faq.label}</span>
-        <h2 id={`${id}-title`} class="display display-lg" data-split>{title}<span class="dot">.</span></h2>
-        <p class="mt-6 text-lg text-muted max-w-sm leading-snug" data-reveal>{intro}</p>
-        <div class="mt-8" data-reveal>
-          <Button href={localePath(lang, 'contact')} variant="ghost">{t.faq.ask}</Button>
+<section id={id} class="theme-dark bg-bg text-fg shell py-24 lg:py-32" aria-labelledby={`${id}-title`}>
+  <SectionHead label={t.faq.label} title={title} id={`${id}-title`} size="md">
+    {intro}
+  </SectionHead>
+
+  <div class="mt-14 lg:mt-20 grid lg:grid-cols-2 gap-3 items-start">
+    {
+      columns.map((col, c) => (
+        <div class="flex flex-col gap-3" data-reveal-group>
+          {col.map((item, i) => (
+            <details class="acc faq group rounded-2xl" name={id}>
+              <summary class="flex items-start gap-4 px-5 lg:px-6 py-5 lg:py-6">
+                <span class="num shrink-0">{twoDigits(c * half + i + 1)}</span>
+                <span class="flex-1 pt-1.5 text-lg font-medium tracking-tight leading-snug">{item.q}</span>
+                <span class="faq-icon shrink-0 grid place-items-center w-9 h-9 rounded-xl mt-0.5" aria-hidden="true">
+                  <i /><i />
+                </span>
+              </summary>
+              <p class="pl-[4.6rem] lg:pl-[4.85rem] pr-6 pb-6 text-muted leading-relaxed">{item.a}</p>
+            </details>
+          ))}
         </div>
-      </div>
-    </div>
-    <div class="col-span-12 lg:col-span-7 flex flex-col gap-2" data-reveal-group>
-      {
-        items.map((item) => (
-          <details class="acc group rounded-2xl bg-surface" name={id}>
-            <summary class="flex items-center justify-between gap-6 px-6 lg:px-8 py-6 lg:py-7 text-lg lg:text-xl font-medium tracking-tight">
-              {item.q}
-              <span class="faq-icon shrink-0 grid place-items-center w-7 h-7 rounded-full bg-fg text-bg" aria-hidden="true">
-                <i /><i />
-              </span>
-            </summary>
-            <p class="px-6 lg:px-8 pb-7 text-muted leading-relaxed max-w-2xl">{item.a}</p>
-          </details>
-        ))
-      }
-    </div>
+      ))
+    }
+  </div>
+
+  <div class="mt-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-4 text-center" data-reveal>
+    <p class="text-lg text-muted">{t.faq.more}</p>
+    <Button href={localePath(lang, 'contact')} variant="ghost">{t.faq.ask}</Button>
   </div>
 </section>
 
 <style>
+  .faq {
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      box-shadow 0.4s ease,
+      background-color 0.4s ease;
+  }
+  .faq[open] {
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px rgb(0 229 153 / 0.35);
+  }
   .faq-icon {
     position: relative;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
     transition:
       background-color 0.4s,
+      color 0.4s,
       transform 0.6s var(--ease-out-expo);
   }
   .faq-icon i {
     position: absolute;
     width: 38%;
-    height: 1.5px;
+    height: 1.6px;
     background: currentColor;
+    transition: transform 0.6s var(--ease-out-expo);
   }
   .faq-icon i:last-child {
     transform: rotate(90deg);
   }
   .acc[open] .faq-icon {
     background: var(--color-accent);
-    transform: rotate(45deg);
+    color: #000;
+    box-shadow: none;
+  }
+  .acc[open] .faq-icon i:last-child {
+    transform: rotate(0deg);
+  }
+  @media (hover: hover) {
+    .faq:not([open]):hover {
+      box-shadow: inset 0 0 0 1px rgb(244 247 245 / 0.3);
+    }
   }
 </style>

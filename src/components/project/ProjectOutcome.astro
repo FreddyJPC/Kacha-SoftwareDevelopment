@@ -2,38 +2,23 @@
 /** Cierre: resultados y aprendizajes, cita del cliente, servicios relacionados y enlace al proyecto en vivo. */
 import type { CollectionEntry } from 'astro:content';
 import Button from '../Button.astro';
+import CheckList from '../CheckList.astro';
 import { getService } from '../../data/services';
 import { getLang, localePath } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
-import { twoDigits } from '../../lib/projects';
 
 interface Props { project: CollectionEntry<'projects'> }
 const { highlights, learnings, url, testimonial, services } = Astro.props.project.data;
 const lang = getLang(Astro);
 const t = useTranslations(lang).project;
-const blocks = [
-  { title: t.results, items: highlights },
-  { title: t.learnings, items: learnings },
-].filter((b) => b.items.length > 0);
 const related = services.map((id) => getService(lang, id)).filter((s) => s !== undefined);
 ---
 
 {
-  blocks.length > 0 && (
-    <div class="grid grid-cols-12 gap-x-6 gap-y-14">
-      {blocks.map((b) => (
-        <div class="col-span-12 lg:col-span-6 lg:pr-10" data-reveal>
-          <h2 class="label label-star text-muted mb-6">{b.title}</h2>
-          <ul class="border-t border-line">
-            {b.items.map((item, i) => (
-              <li class="flex gap-5 py-5 border-b border-line text-lg leading-snug">
-                <span class="label text-faint pt-2">{twoDigits(i + 1)}</span>
-                <span class="font-medium">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+  (highlights.length > 0 || learnings.length > 0) && (
+    <div class="grid lg:grid-cols-2 gap-2">
+      {highlights.length > 0 && <CheckList title={t.results} items={highlights} />}
+      {learnings.length > 0 && <CheckList title={t.learnings} items={learnings} icon="star" />}
     </div>
   )
 }
@@ -59,7 +44,7 @@ const related = services.map((id) => getService(lang, id)).filter((s) => s !== u
           <ul class="flex flex-wrap gap-2">
             {related.map((s) => (
               <li>
-                <a href={localePath(lang, 'services', s.slug)} class="tag !text-base !py-2.5 !px-4 font-medium hover:bg-fg hover:text-bg transition-colors duration-300">{s.title}</a>
+                <a href={localePath(lang, 'services', s.slug)} class="tag !text-base !py-2.5 !px-4 font-medium hover:bg-accent hover:!border-accent hover:text-black transition-colors duration-300">{s.title}</a>
               </li>
             ))}
           </ul>

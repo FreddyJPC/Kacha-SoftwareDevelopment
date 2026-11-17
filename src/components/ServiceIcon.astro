@@ -1,0 +1,62 @@
+---
+/** Ícono lineal de cada servicio, según su id (src/data/services.ts). */
+interface Props {
+  id: string;
+  class?: string;
+}
+const { id, class: cls = 'w-6 h-6' } = Astro.props;
+---
+
+<svg class={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  {
+    id === 'desarrollo-web' && (
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="2.5" />
+        <path d="M3 8.5h18M6.5 6.25h.01M9 6.25h.01M9 13l-2 2 2 2M15 13l2 2-2 2" />
+      </>
+    )
+  }
+  {
+    id === 'ecommerce' && (
+      <>
+        <path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3Z" />
+        <path d="M9 10.5V7a3 3 0 0 1 6 0v3.5" />
+      </>
+    )
+  }
+  {
+    id === 'aplicaciones-web' && (
+      <>
+        <rect x="3" y="3.5" width="7.5" height="7.5" rx="1.8" />
+        <rect x="13.5" y="3.5" width="7.5" height="4.5" rx="1.8" />
+        <rect x="13.5" y="11" width="7.5" height="9.5" rx="1.8" />
+        <rect x="3" y="14" width="7.5" height="6.5" rx="1.8" />
+      </>
+    )
+  }
+  {
+    id === 'automatizacion-ia' && (
+      <>
+        <path d="M12 3.5c.3 2.6 1.2 4.5 2.6 5.9 1.4 1.4 3.3 2.3 5.9 2.6-2.6.3-4.5 1.2-5.9 2.6-1.4 1.4-2.3 3.3-2.6 5.9-.3-2.6-1.2-4.5-2.6-5.9C8 13.2 6.1 12.3 3.5 12c2.6-.3 4.5-1.2 5.9-2.6C10.8 8 11.7 6.1 12 3.5Z" />
+        <path d="M19 3v3M17.5 4.5h3" />
+      </>
+    )
+  }
+  {
+    id === 'diseno-ui-ux' && (
+      <>
+        <path d="M4 20l1.2-4.2L15.8 5.2a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8Z" />
+        <path d="M14 7l3 3M4 20h16" />
+      </>
+    )
+  }
+  {
+    id === 'migracion-y-soporte' && (
+      <>
+        <path d="M20 11a8 8 0 0 0-14.3-4.9L4 8" />
+        <path d="M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16" />
+        <path d="M20 20v-4h-4" />
+      </>
+    )
+  }
+</svg>

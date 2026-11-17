@@ -1,20 +1,20 @@
 ---
-/** Pantalla de carga con contador (solo en la primera visita de la sesión). */
-import { site } from '../data/site';
-import Star from './Star.astro';
+/** Pantalla de carga (solo en la primera visita de la sesión): la estrella gira y crece hasta abrir la página. */
 import { getLang } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
+import Star from './Star.astro';
 
 const t = useTranslations(getLang(Astro)).preloader;
 ---
 
-<div data-preloader class="preloader theme-dark fixed inset-0 z-[90] bg-bg text-fg flex-col justify-between p-[var(--gutter)]" aria-hidden="true">
-  <span class="label text-muted"><Star class="w-3.5 h-3.5 text-accent" /> {site.fullName}</span>
-  <div>
-    <div class="flex items-end justify-between">
-      <span class="display text-[clamp(4rem,16vw,14rem)] tabular-nums" data-preloader-count>000</span>
-      <span class="label text-muted pb-4">{t.loading}</span>
-    </div>
-    <div class="h-px bg-line mt-2"><div data-preloader-bar class="h-full bg-accent origin-left scale-x-0"></div></div>
+<div data-preloader class="preloader theme-dark fixed inset-0 z-[90] bg-bg text-fg flex-col items-center justify-center gap-7 overflow-hidden" aria-hidden="true">
+  <div class="dots absolute inset-0"></div>
+  <span data-preloader-star class="relative block w-16 h-16 text-accent">
+    <Star class="w-full h-full animate-[spin-slow_2.4s_linear_infinite]" />
+  </span>
+  <div class="relative flex flex-col items-center gap-4">
+    <span class="font-[family-name:var(--font-wide)] text-[clamp(1.6rem,5vw,2.6rem)] tracking-[-0.01em]">KACHA</span>
+    <div class="w-44 h-[3px] rounded-full bg-line overflow-hidden"><div data-preloader-bar class="h-full rounded-full bg-accent origin-left scale-x-0"></div></div>
+    <span class="label text-muted"><span data-preloader-count>0</span>% · {t.loading}</span>
   </div>
 </div>

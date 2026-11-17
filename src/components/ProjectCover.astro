@@ -32,12 +32,12 @@ const pos = [`${20 + (seed % 60)}% 115%`, `${110 - (seed % 40)}% ${10 + (seed % 
       loading={eager ? 'eager' : 'lazy'}
     />
   ) : (
-    <div class="cover-media gen grain theme-dark relative w-full h-full overflow-hidden bg-surface text-fg" style={`--p1:${pos[0]};--p2:${pos[1]}`}>
+    <div class="cover-media gen theme-dark relative w-full h-full overflow-hidden bg-surface text-fg" style={`--p1:${pos[0]};--p2:${pos[1]}`}>
+      <div class="dots absolute inset-0"></div>
       <div class="absolute inset-0 flex flex-col justify-between p-[6%]">
         <p class="label text-fg/80 self-end">{year}</p>
         <p class="display text-[clamp(2.5rem,9cqw,7rem)] leading-[0.86]">
           {client}
-          <span class="dot">.</span>
         </p>
       </div>
     </div>

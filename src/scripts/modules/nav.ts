@@ -7,7 +7,9 @@ const root = document.documentElement;
 export function closeMenu() {
   if (!root.classList.contains('menu-open')) return;
   root.classList.remove('menu-open');
-  document.querySelector('[data-menu-toggle]')?.setAttribute('aria-expanded', 'false');
+  const toggle = document.querySelector<HTMLElement>('[data-menu-toggle]');
+  toggle?.setAttribute('aria-expanded', 'false');
+  toggle?.setAttribute('aria-label', toggle.dataset.labelOpen ?? '');
   getLenis()?.start();
 }
 
@@ -25,7 +27,7 @@ export function initNav(signal: AbortSignal) {
     },
     { signal },
   );
-  document.querySelectorAll('[data-menu] a').forEach((a) => a.addEventListener('click', closeMenu, { signal }));
+  document.querySelectorAll('[data-menu] a, [data-menu-close]').forEach((a) => a.addEventListener('click', closeMenu, { signal }));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu(), { signal });
 
   if (nav) {

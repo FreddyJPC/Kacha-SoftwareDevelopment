@@ -1,9 +1,10 @@
 ---
-/** Proceso: fases del proyecto en orden. */
+/** Proceso: fases del proyecto en una línea de tiempo. */
 import type { CollectionEntry } from 'astro:content';
+import SectionHead from '../SectionHead.astro';
+import Timeline from '../Timeline.astro';
 import { getLang } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
-import { threeDigits } from '../../lib/projects';
 
 interface Props { project: CollectionEntry<'projects'> }
 const { process } = Astro.props.project.data;
@@ -12,25 +13,19 @@ const t = useTranslations(getLang(Astro)).project;
 
 {
   process.length > 0 && (
-    <section class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby="process-title">
-      <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
-        <h2 id="process-title" class="col-span-12 lg:col-span-8 display display-lg" data-split>
-          {t.process}<span class="dot">.</span>
-        </h2>
-        <p class="col-span-12 lg:col-span-4 text-lg text-muted leading-snug max-w-md lg:justify-self-end lg:pb-3" data-reveal>
-          {t.processIntro}
-        </p>
+    <section class="theme-dark bg-bg text-fg shell py-24 lg:py-32" aria-labelledby="process-title">
+      <div class="grid grid-cols-12 gap-x-6 gap-y-14">
+        <div class="col-span-12 lg:col-span-4">
+          <div class="lg:sticky lg:top-32">
+            <SectionHead label={t.process} title={t.processTitle} id="process-title" size="md" align="left">
+              {t.processIntro}
+            </SectionHead>
+          </div>
+        </div>
+        <div class="col-span-12 lg:col-span-8">
+          <Timeline items={process} />
+        </div>
       </div>
-
-      <ol class="mt-14 lg:mt-24 border-t border-line">
-        {process.map((step, i) => (
-          <li class="grid grid-cols-12 gap-x-6 gap-y-3 py-8 lg:py-11 border-b border-line" data-reveal>
-            <span class="col-span-12 lg:col-span-3 label text-muted pt-2">({threeDigits(i + 1)})</span>
-            <h3 class="col-span-12 lg:col-span-4 text-[clamp(1.5rem,2.6vw,2.4rem)] font-medium tracking-[-0.035em] leading-[1.05]">{step.title}</h3>
-            <p class="col-span-12 lg:col-span-5 text-lg text-muted leading-relaxed">{step.text}</p>
-          </li>
-        ))}
-      </ol>
     </section>
   )
 }

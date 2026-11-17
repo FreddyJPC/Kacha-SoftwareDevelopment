@@ -10,12 +10,11 @@ import SectionHead from './SectionHead.astro';
 
 const lang = getLang(Astro);
 const t = useTranslations(lang);
-const [before, accent, after] = t.process.title;
 ---
 
 <section id={t.ids.process} class="theme-dark bg-bg text-fg py-24 lg:py-36 overflow-hidden" aria-labelledby="process-title">
   <div class="shell">
-    <SectionHead label={t.process.label} title={before} accent={accent} after={after} id="process-title" size="md">
+    <SectionHead label={t.process.label} title={t.process.title} id="process-title">
       {t.process.intro}
     </SectionHead>
   </div>
@@ -86,7 +85,8 @@ const [before, accent, after] = t.process.title;
     line-height: 0.9;
   }
   .note-when {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
+    font-weight: 700;
     font-size: 0.66rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;

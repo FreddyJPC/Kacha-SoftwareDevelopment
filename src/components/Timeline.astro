@@ -1,0 +1,64 @@
+---
+/**
+ * Línea de tiempo vertical con nodos numerados (proceso de un servicio o de un proyecto).
+ * La línea se rellena de verde a medida que se hace scroll (data-progress, ver reveal.ts).
+ */
+interface Props {
+  items: { title: string; text: string }[];
+}
+const { items } = Astro.props;
+---
+
+<ol class="timeline relative" data-progress>
+  <span class="rail" aria-hidden="true"><span class="rail-fill" data-progress-fill></span></span>
+  {
+    items.map((step, i) => (
+      <li class="relative grid grid-cols-[3rem_1fr] sm:grid-cols-[3.5rem_1fr] gap-x-5 pb-10 last:pb-0" data-reveal>
+        <span class="node grid place-items-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl font-bold text-lg">{i + 1}</span>
+        <div class="pt-2 sm:pt-3 grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-x-10 gap-y-2">
+          <h3 class="text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-[-0.03em] leading-[1.1]">{step.title}</h3>
+          <p class="text-lg text-muted leading-relaxed">{step.text}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .rail {
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    left: calc(1.5rem - 1px);
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .rail-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    transform-origin: top;
+    transform: scaleY(var(--progress, 1));
+  }
+  :global(html.js) .rail-fill {
+    transform: scaleY(var(--progress, 0));
+  }
+  .node {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    color: var(--accent-ink);
+    box-shadow:
+      inset 0 0 0 1.5px var(--accent-ink),
+      0 0 0 6px var(--bg);
+  }
+  @media (min-width: 640px) {
+    .rail {
+      top: 1.75rem;
+      bottom: 1.75rem;
+      left: calc(1.75rem - 1px);
+    }
+  }
+</style>
