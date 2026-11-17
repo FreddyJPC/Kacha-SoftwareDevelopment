@@ -1,0 +1,9 @@
+---
+import ServiceDetail from '../../../views/ServiceDetail.astro';
+import { servicePaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => servicePaths('en');
+const { service, next } = Astro.props;
+---
+
+<ServiceDetail service={service} next={next} />

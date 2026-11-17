@@ -1,382 +1,111 @@
-<section class="hero-section">
-  <!-- Fondo con destellos de luz (Glow Effects) -->
-  <div class="hero-glow glow-left"></div>
-  <div class="hero-glow glow-right"></div>
+---
+import { about } from '../data/about';
+import { site } from '../data/site';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Button from './Button.astro';
+import Star from './Star.astro';
 
-  <div class="hero-content">
-    <h1 class="reveal-element" style="--delay: 0.1s">
-      Convertimos tus ideas en <span class="font-secondary-italic text-gradient"
-        >realidad</span
-      >
-    </h1>
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const [l1, l2, l3] = t.hero.title;
+---
 
-    <p class="reveal-element" style="--delay: 0.2s">
-      Diseñamos y desarrollamos soluciones web de alto impacto que no solo se
-      ven bien, sino que impulsan el crecimiento real de tu negocio.
-    </p>
-
-    <div class="hero-actions reveal-element" style="--delay: 0.3s">
-      <!-- <button class="primary-btn" onclick="document.getElementById('work').scrollIntoView({behavior: 'smooth'})">
-        Ver Portafolio
-      </button> -->
-      <button
-        class="secondary-btn"
-        onclick="window.open('https://wa.me/593987156883','_blank')"
-      >
-        Hablemos
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
-          ></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="hero-images reveal-element" style="--delay: 0.4s">
-    <!-- Contenedor con efecto de flotación continua -->
-    <div class="floating-container">
-      <img
-        src="/img/hero-collage-combined.png"
-        alt="Devec Showcase"
-        class="hero-single-image"
-      />
-      <!-- Elemento decorativo flotante extra (opcional) -->
-      <div class="glass-card">
-        <span class="check-icon">✓</span>
-        <span>Calidad Garantizada</span>
+<section class="theme-dark p-[var(--inset)] pt-[calc(var(--inset)*2+3.5rem)]" aria-label={t.hero.aria}>
+  <div
+    data-hero
+    class="hero grain relative overflow-hidden rounded-[var(--radius-panel)] bg-surface text-fg flex flex-col justify-between min-h-[calc(100svh-var(--inset)*3-3.5rem)] origin-top"
+  >
+    <div class="absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden="true">
+      <div data-glow class="absolute inset-0">
+        <div class="glow glow-a"></div>
+        <div class="glow glow-b"></div>
       </div>
+      <div class="grid-lines absolute inset-0"></div>
     </div>
-  </div>
 
-  <!-- Indicador de Scroll -->
-  <div class="scroll-indicator">
-    <div class="mouse">
-      <div class="wheel"></div>
+    <!-- Fila superior -->
+    <div class="relative z-10 shell pt-[var(--gutter)] flex items-start justify-between gap-8">
+      <p class="label text-fg/80" data-reveal data-delay="0.5">({t.meta.role} — {site.location})</p>
+      <ul class="hidden md:flex flex-col gap-1.5 text-right text-[1.05rem] text-fg/85" data-reveal-group data-delay="0.6">
+        {about[lang].focus.map((f) => <li>{f}</li>)}
+      </ul>
+    </div>
+
+    <!-- Sello giratorio -->
+    <div class="seal absolute z-10 hidden lg:block right-[var(--gutter)] top-[30%] xl:top-[26%] w-[clamp(8rem,13vw,12.5rem)]" data-reveal data-delay="0.9" aria-hidden="true">
+      <svg viewBox="0 0 200 200" class="seal-ring w-full h-full">
+        <defs><path id="seal-path" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"></path></defs>
+        <text class="seal-text"><textPath href="#seal-path" textLength="484">{t.hero.seal}</textPath></text>
+      </svg>
+      <Star class="absolute inset-0 m-auto w-[38%] h-[38%] text-accent" />
+    </div>
+
+    <!-- Título + pie -->
+    <div class="relative z-10 shell pb-[var(--gutter)] pt-20">
+      <h1 class="display display-hero">
+        <span class="block" data-split data-delay="0.1">{l1}</span>
+        <span class="block -mt-[0.06em]" data-split data-delay="0.22">{l2}</span>
+        <span class="block accent text-[1.06em] leading-[0.86] pb-[0.08em] text-accent" data-split data-delay="0.34">{l3}<span class="dot !text-fg">.</span></span>
+      </h1>
+
+      <div class="mt-8 lg:mt-10 grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+        <p class="col-span-12 md:col-span-6 xl:col-span-5 text-lg lg:text-xl leading-snug text-fg/90 max-w-xl" data-reveal data-delay="0.55">
+          {t.hero.text}
+        </p>
+
+        <div class="col-span-12 md:col-span-6 xl:col-span-4 flex flex-wrap gap-3 md:justify-end xl:justify-start" data-reveal data-delay="0.65">
+          <Button href={localePath(lang, 'contact')} variant="accent">{t.common.cta}</Button>
+          <Button href={localePath(lang, 'projects')} variant="ghost">{t.hero.work}</Button>
+        </div>
+
+        <!-- Tarjeta de disponibilidad -->
+        <a
+          href={site.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-card col-span-12 xl:col-span-3 xl:justify-self-end flex items-center gap-3.5 rounded-2xl p-2.5 pr-5 w-full sm:w-fit"
+          data-reveal
+          data-delay="0.75"
+        >
+          <span class="grid place-items-center w-14 h-14 rounded-xl bg-accent text-black shrink-0">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+          </span>
+          <span class="flex flex-col gap-0.5 leading-tight min-w-0 min-[380px]:whitespace-nowrap">
+            <span class="font-medium flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent animate-[pulse-dot_2s_infinite]"></span>
+              {t.hero.whatsapp}
+            </span>
+            <span class="text-sm text-fg/70">{t.common.responseTime}</span>
+          </span>
+          <span class="ml-auto pl-4 label hidden min-[420px]:inline-flex xl:hidden 2xl:inline-flex">
+            <span data-clock={site.timezone}>--:--:--</span>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  :root {
-    --font-primary: "Satoshi", sans-serif;
-    --font-secondary: "Instrument Serif", serif;
-    --color-accent: #00e599;
-    --color-dark: #050505;
+  .contact-card {
+    background: rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+    transition: background-color 0.4s ease;
   }
-
-  body {
-    margin: 0;
-    overflow-x: hidden;
+  .contact-card:hover {
+    background: rgb(0 0 0 / 0.55);
   }
-
-  .hero-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4rem;
-    padding: clamp(2rem, 8vw, 8rem);
-    min-height: 100vh; /* Ocupa toda la pantalla para impacto */
-    position: relative;
-    color: #fff;
-    overflow: hidden;
+  .seal-ring {
+    animation: spin-slow 26s linear infinite;
   }
-
-  /* --- EFECTOS DE FONDO (GLOW) --- */
-  .hero-glow {
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(
-      circle,
-      rgba(0, 229, 153, 0.15) 0%,
-      rgba(0, 0, 0, 0) 70%
-    );
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .glow-left {
-    top: -20%;
-    left: -10%;
-  }
-  .glow-right {
-    bottom: -10%;
-    right: -10%;
-    background: radial-gradient(
-      circle,
-      rgba(0, 100, 255, 0.1) 0%,
-      rgba(0, 0, 0, 0) 70%
-    );
-  }
-
-  /* --- CONTENIDO IZQUIERDA --- */
-  .hero-content {
-    flex: 1;
-    max-width: 700px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Badge superior */
-  .badge-container {
-    margin-bottom: 1.5rem;
-  }
-  .new-badge {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-family: var(--font-primary);
-    font-size: 0.85rem;
-    color: #ccc;
-    display: inline-block;
-  }
-
-  .hero-content h1 {
-    font-family: var(--font-primary);
-    font-size: clamp(3rem, 5vw, 5rem);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-  }
-
-  .font-secondary-italic {
-    font-family: var(--font-secondary);
-    font-style: italic;
-    font-weight: 400;
-  }
-
-  .text-gradient {
-    color: var(--color-accent);
-    /* Opcional: Gradiente en texto si te gusta más */
-    /* background: linear-gradient(90deg, #00E599 0%, #00afff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; */
-  }
-
-  .hero-content p {
-    font-family: var(--font-primary);
-    font-size: clamp(1.1rem, 2vw, 1.25rem);
-    color: #a0a0a0;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
-    max-width: 90%;
-  }
-
-  /* Botones */
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .primary-btn {
-    background-color: var(--color-accent);
-    color: #000;
-    border: none;
-    padding: 1rem 2rem;
-    font-family: var(--font-primary);
-    font-weight: 700;
-    font-size: 1rem;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .primary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 229, 153, 0.4);
-  }
-
-  .secondary-btn {
-    background-color: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 1rem 2rem;
-    font-family: var(--font-primary);
-    font-weight: 600;
-    font-size: 1rem;
-    border-radius: 50px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-  }
-
-  .secondary-btn:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  /* --- IMAGEN DERECHA --- */
-  .hero-images {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .floating-container {
-    position: relative;
-    /* Animación continua de flotación */
-    animation: floatHero 6s ease-in-out infinite;
-  }
-
-  .hero-single-image {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(
-      0 20px 40px rgba(0, 0, 0, 0.5)
-    ); /* Sombra real bajo la imagen PNG */
-  }
-
-  /* Tarjeta de vidrio decorativa */
-  .glass-card {
-    position: absolute;
-    bottom: 40px;
-    left: -20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.8rem 1.5rem;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: #fff;
-    font-family: var(--font-primary);
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-
-    /* Animación flotante desfasada */
-    animation: floatHero 5s ease-in-out infinite reverse;
-  }
-
-  .check-icon {
-    background: var(--color-accent);
-    color: #000;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 0.8rem;
-  }
-
-  /* --- INDICADOR DE SCROLL --- */
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0.7;
-    animation: fadeScroll 2s infinite;
-  }
-
-  .mouse {
-    width: 26px;
-    height: 40px;
-    border: 2px solid #fff;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    padding-top: 8px;
-  }
-
-  .wheel {
-    width: 4px;
-    height: 8px;
-    background-color: var(--color-accent);
-    border-radius: 2px;
-    animation: scrollWheel 1.5s infinite;
-  }
-
-  /* --- ANIMACIONES KEYFRAMES --- */
-
-  /* Entrada suave hacia arriba */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Flotación continua */
-  @keyframes floatHero {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-15px);
-    }
-  }
-
-  /* Ruedita del mouse */
-  @keyframes scrollWheel {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(15px);
-      opacity: 0;
-    }
-  }
-
-  /* Clases de utilidad para animación escalonada */
-  .reveal-element {
-    opacity: 0;
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    animation-delay: var(--delay);
-  }
-
-  /* --- RESPONSIVE --- */
-  @media (max-width: 1024px) {
-    .hero-section {
-      padding: 6rem 2rem 4rem;
-      flex-direction: column-reverse; /* Imagen arriba en móvil, texto abajo? O viceversa */
-      text-align: center;
-      gap: 3rem;
-      min-height: auto;
-    }
-
-    .hero-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .hero-actions {
-      justify-content: center;
-    }
-
-    .hero-glow {
-      width: 300px;
-      height: 300px;
-    }
-
-    .glass-card {
-      display: none; /* Ocultar detalles complejos en móvil pequeño */
-    }
-
-    /* En móvil, normalmente queremos la imagen primero para impacto visual */
-    .hero-section {
-      flex-direction: column;
-    }
-    /* Si prefieres texto primero, cambia a column-reverse */
+  .seal-text {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: currentColor;
   }
 </style>

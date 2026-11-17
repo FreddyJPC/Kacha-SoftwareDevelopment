@@ -1,0 +1,81 @@
+---
+/**
+ * Caso de estudio: /proyectos/<slug>/ y /en/projects/<slug>/
+ * Solo compone los bloques de src/components/project; cada bloque se oculta
+ * si el proyecto no tiene ese contenido.
+ */
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Site from '../layouts/Site.astro';
+import ProjectCover from '../components/ProjectCover.astro';
+import ProjectHeader from '../components/project/ProjectHeader.astro';
+import ProjectOverview from '../components/project/ProjectOverview.astro';
+import ProjectProcess from '../components/project/ProjectProcess.astro';
+import ProjectDecisions from '../components/project/ProjectDecisions.astro';
+import ProjectOutcome from '../components/project/ProjectOutcome.astro';
+import ProjectNext from '../components/project/ProjectNext.astro';
+import Contact from '../components/Contact.astro';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+const { project, next } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+const hasBody = (project.body ?? '').trim().length > 0;
+const t = useTranslations(getLang(Astro));
+---
+
+<Site title={d.title} description={d.summary}>
+  <article>
+    <ProjectHeader project={project} />
+
+    <div class="theme-dark px-[var(--inset)]">
+      <div class="overflow-hidden rounded-[var(--radius-panel)] bg-surface aspect-[4/3] md:aspect-[16/10]" data-reveal>
+        <ProjectCover project={project} sizes="100vw" eager />
+      </div>
+    </div>
+
+    <!-- Resumen + contexto -->
+    <section class="panel theme-light shell mt-[var(--inset)] py-20 lg:py-32">
+      <ProjectOverview project={project} />
+      {
+        hasBody && (
+          <div class="mt-20 lg:mt-28 pt-12 border-t border-line grid grid-cols-12 gap-x-6 gap-y-8">
+            <h2 class="col-span-12 lg:col-span-3 label label-star text-muted h-fit" data-reveal>{t.project.context}</h2>
+            <div class="prose col-span-12 lg:col-span-8" data-reveal>
+              <Content />
+            </div>
+          </div>
+        )
+      }
+    </section>
+
+    <ProjectProcess project={project} />
+
+    <!-- Decisiones, galería y cierre -->
+    <section class="panel theme-light shell py-20 lg:py-32 space-y-24 lg:space-y-36">
+      <ProjectDecisions project={project} />
+      {
+        d.gallery.length > 0 && (
+          <div class:list={['grid gap-2', d.gallery.length > 1 && 'md:grid-cols-2']}>
+            {d.gallery.map((img) => (
+              <div class="overflow-hidden rounded-[calc(var(--radius-panel)*0.7)] bg-surface" data-reveal>
+                <Image src={img} alt={`${t.common.coverAlt} ${d.title}`} widths={[640, 960, 1440, 1880]} sizes="(min-width: 768px) 90vw, 100vw" class="w-full h-auto" />
+              </div>
+            ))}
+          </div>
+        )
+      }
+      <ProjectOutcome project={project} />
+    </section>
+
+    <ProjectNext project={next} />
+  </article>
+
+  <Contact />
+</Site>

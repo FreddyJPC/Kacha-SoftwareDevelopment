@@ -1,0 +1,37 @@
+---
+/** Cabecera del caso de estudio: título, resumen y ficha técnica. */
+import type { CollectionEntry } from 'astro:content';
+import PageIntro from '../PageIntro.astro';
+import { getLang, localePath } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props { project: CollectionEntry<'projects'> }
+const d = Astro.props.project.data;
+const lang = getLang(Astro);
+const t = useTranslations(lang).project;
+const meta = [
+  { k: t.client, v: d.client },
+  { k: t.industry, v: d.industry },
+  { k: t.type, v: d.category },
+  { k: t.year, v: String(d.year) },
+  { k: t.duration, v: d.duration },
+  { k: t.team, v: d.team },
+  { k: t.status, v: d.status },
+].filter((m) => m.v);
+---
+
+<PageIntro label={t.label} title={d.title} size="lg" back={{ label: t.back, href: localePath(lang, 'projects') }}>
+  {d.summary}
+  <Fragment slot="after">
+    <dl class="mt-14 lg:mt-20 grid grid-cols-2 md:grid-cols-4 xl:flex xl:justify-between gap-x-8 gap-y-8 border-t border-line pt-8" data-reveal-group data-delay="0.35">
+      {
+        meta.map((m) => (
+          <div class="xl:max-w-[14rem]">
+            <dt class="label text-muted mb-3">{m.k}</dt>
+            <dd class="text-lg font-medium leading-snug">{m.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Fragment>
+</PageIntro>

@@ -1,0 +1,96 @@
+---
+/** Tarjetas de los planes. Los datos están en src/data/pricing.ts */
+import { plans } from '../data/pricing';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Button from './Button.astro';
+import Star from './Star.astro';
+
+interface Props {
+  /** h3 bajo una sección con h2 (portada); h2 cuando cuelgan directamente del h1 (página de precios) */
+  heading?: 'h2' | 'h3';
+}
+const { heading: H = 'h3' } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+---
+
+<div class="grid lg:grid-cols-3 gap-2 items-stretch" data-reveal-group>
+  {
+    plans[lang].map((plan, i) => (
+      <article
+        class:list={[
+          'plan relative flex flex-col rounded-[calc(var(--radius-panel)*0.8)] p-7 lg:p-9',
+          plan.popular ? 'theme-dark bg-bg text-fg is-popular' : 'bg-surface',
+        ]}
+        data-shine={plan.popular ? '' : undefined}
+      >
+        <div class="flex items-center justify-between gap-4">
+          <H class="label">({String(i + 1).padStart(2, '0')}) {plan.name}</H>
+          {plan.popular && (
+            <span class="tag !border-transparent bg-accent text-black font-medium gap-1.5">
+              <Star class="w-3 h-3" /> {t.pricing.popular}
+            </span>
+          )}
+        </div>
+
+        <p class="mt-10 flex items-baseline gap-2">
+          <span class="text-muted text-lg">{t.common.from}</span>
+          <span class="display text-[clamp(3.4rem,6vw,5.25rem)] leading-none">{plan.price}</span>
+        </p>
+        <p class="mt-4 text-xl font-medium tracking-[-0.02em] leading-snug">{plan.tagline}</p>
+        <p class="mt-2 text-muted text-[0.95rem]">{plan.range}</p>
+
+        <ul class="mt-8 pt-7 border-t border-line flex flex-col gap-3.5">
+          {plan.features.map((f) => (
+            <li class="flex gap-3 leading-snug">
+              <span class="check shrink-0 grid place-items-center w-5 h-5 mt-0.5 rounded-full" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m3.5 8.5 3 3 6-7" /></svg>
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-auto pt-10 flex flex-col gap-4">
+          <p class="label text-muted">{plan.delivery}</p>
+          <Button href={`${localePath(lang, 'contact')}?plan=${encodeURIComponent(plan.name)}`} variant={plan.popular ? 'accent' : 'solid'} class="w-fit">
+            {t.pricing.choose(plan.name)}
+          </Button>
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .check {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .is-popular .check {
+    background: var(--color-accent);
+    color: #000;
+  }
+  .is-popular {
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.55);
+  }
+  .is-popular::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(420px circle at var(--mx, 85%) var(--my, 0%), rgb(0 229 153 / 0.22), transparent 65%),
+      radial-gradient(60% 50% at 100% 100%, rgb(0 100 255 / 0.16), transparent 70%);
+  }
+  .is-popular > * {
+    position: relative;
+  }
+  @media (min-width: 1024px) {
+    .is-popular {
+      margin-block: -1rem;
+    }
+  }
+</style>

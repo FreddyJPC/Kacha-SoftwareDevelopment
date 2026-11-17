@@ -1,0 +1,100 @@
+---
+/** Precios: /precios/ y /en/pricing/. Planes, servicios mensuales, qué mueve el precio y condiciones. Datos en src/data/pricing.ts */
+import Site from '../layouts/Site.astro';
+import PageIntro from '../components/PageIntro.astro';
+import PlanCards from '../components/PlanCards.astro';
+import Button from '../components/Button.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import { monthly, priceFactors, pricingNote, terms } from '../data/pricing';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { threeDigits, twoDigits } from '../lib/projects';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const p = t.pricingPage;
+const [titleBefore, titleAccent, titleAfter] = p.title;
+const [factorsBefore, factorsAccent, factorsAfter] = p.factorsTitle;
+---
+
+<Site title={t.pricing.title} description={p.description}>
+  <PageIntro label={t.pricing.label} title={titleBefore} accent={titleAccent} after={titleAfter}>
+    {p.intro}
+  </PageIntro>
+
+  <section class="panel theme-light shell py-16 lg:py-24" aria-label={p.plans}>
+    <PlanCards heading="h2" />
+    <p class="mt-8 text-sm text-muted" data-reveal>{pricingNote[lang]}</p>
+  </section>
+
+  <!-- Planes mensuales -->
+  <section class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby="monthly-title">
+    <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+      <div class="col-span-12"><span class="label label-star text-muted" data-reveal>{p.monthlyLabel}</span></div>
+      <h2 id="monthly-title" class="col-span-12 lg:col-span-8 display display-lg" data-split>{p.monthlyTitle}<span class="dot">.</span></h2>
+      <p class="col-span-12 lg:col-span-4 text-lg text-muted leading-snug max-w-md lg:justify-self-end lg:pb-3" data-reveal>
+        {p.monthlyIntro}
+      </p>
+    </div>
+    <ul class="mt-14 lg:mt-24 border-t border-line">
+      {
+        monthly[lang].map((m, i) => (
+          <li class="grid grid-cols-12 gap-x-6 gap-y-3 items-baseline py-8 lg:py-11 border-b border-line" data-reveal>
+            <span class="col-span-12 lg:col-span-1 label text-muted">({threeDigits(i + 1)})</span>
+            <h3 class="col-span-12 lg:col-span-4 text-[clamp(1.5rem,2.6vw,2.4rem)] font-medium tracking-[-0.035em] leading-[1.05]">{m.name}</h3>
+            <p class="col-span-12 sm:col-span-7 lg:col-span-4 text-lg text-muted leading-snug">{m.text}</p>
+            <p class="col-span-12 sm:col-span-5 lg:col-span-3 sm:text-right whitespace-nowrap">
+              <span class="text-2xl lg:text-3xl font-bold tracking-[-0.04em]">{m.price}</span><span class="text-muted">{m.unit}</span>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Qué mueve el precio + condiciones -->
+  <section class="panel theme-light shell py-20 lg:py-32 space-y-24 lg:space-y-32 mb-[var(--inset)]">
+    <div>
+      <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+        <div class="col-span-12 lg:col-span-3"><span class="label label-star text-muted" data-reveal>{p.factorsLabel}</span></div>
+        <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>{factorsBefore}<span class="accent">{factorsAccent}</span>{factorsAfter}<span class="dot">.</span></h2>
+      </div>
+      <div class="mt-12 lg:mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-2" data-reveal-group>
+        {
+          priceFactors[lang].map((f, i) => (
+            <article class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-7 flex flex-col gap-10 min-h-52">
+              <span class="label text-faint">{twoDigits(i + 1)}</span>
+              <div class="mt-auto">
+                <h3 class="text-2xl font-bold tracking-[-0.035em] leading-[1.1]">{f.title}</h3>
+                <p class="mt-3 text-muted leading-relaxed">{f.text}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-x-6 gap-y-10">
+      <div class="col-span-12 lg:col-span-4">
+        <span class="label label-star text-muted mb-6" data-reveal>{p.termsLabel}</span>
+        <h2 class="display display-sm" data-split>{p.termsTitle}<span class="dot">.</span></h2>
+        <div class="mt-8" data-reveal><Button href={localePath(lang, 'contact')} variant="solid">{p.quote}</Button></div>
+      </div>
+      <ul class="col-span-12 lg:col-span-7 lg:col-start-6 border-t border-line" data-reveal-group>
+        {
+          terms[lang].map((term, i) => (
+            <li class="grid grid-cols-12 gap-x-6 gap-y-1 py-6 border-b border-line">
+              <span class="col-span-2 sm:col-span-1 label text-faint pt-2">{twoDigits(i + 1)}</span>
+              <h3 class="col-span-10 sm:col-span-4 text-lg font-bold tracking-[-0.02em]">{term.title}</h3>
+              <p class="col-span-10 col-start-3 sm:col-span-7 sm:col-start-auto text-muted leading-snug">{term.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Faq />
+  <Contact />
+</Site>

@@ -1,0 +1,171 @@
+---
+/**
+ * Detalle de un servicio: /servicios/<slug>/ y /en/services/<slug>/
+ * Todo el contenido sale de src/data/services.ts; los proyectos relacionados,
+ * de los .md cuyo campo `services` incluye el id del servicio.
+ */
+import Site from '../layouts/Site.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Arrow from '../components/Arrow.astro';
+import Button from '../components/Button.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import type { Service } from '../data/services';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { getProjectsByService, threeDigits, twoDigits } from '../lib/projects';
+
+interface Props {
+  service: Service;
+  next: Service;
+}
+const { service: s, next } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const related = (await getProjectsByService(lang, s.id)).slice(0, 2);
+const meta = [
+  { k: t.service.investment, v: s.from },
+  { k: t.service.timeline, v: s.timeline },
+  { k: t.service.tech, v: s.tags.slice(0, 3).join(' · ') },
+];
+const [incBefore, incAccent, incAfter] = t.service.includedTitle;
+const [relBefore, relAccent, relAfter] = t.service.relatedTitle;
+---
+
+<Site title={s.title} description={s.summary}>
+  <PageIntro label={t.service.label} title={s.title} size="lg" back={{ label: t.service.back, href: localePath(lang, 'services') }}>
+    {s.summary}
+    <Fragment slot="after">
+      <div class="mt-14 lg:mt-20 grid md:grid-cols-4 gap-x-8 gap-y-8 border-t border-line pt-8">
+        <dl class="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-8" data-reveal-group data-delay="0.35">
+          {
+            meta.map((m) => (
+              <div>
+                <dt class="label text-muted mb-3">{m.k}</dt>
+                <dd class="text-lg font-medium leading-snug">{m.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <div class="md:justify-self-end" data-reveal data-delay="0.45">
+          <Button href={`${localePath(lang, 'contact')}?service=${s.id}`} variant="accent">{t.service.quote}</Button>
+        </div>
+      </div>
+    </Fragment>
+  </PageIntro>
+
+  <!-- Descripción + qué incluye -->
+  <section class="panel theme-light shell py-20 lg:py-32">
+    <div class="grid grid-cols-12 gap-x-6 gap-y-10">
+      <div class="col-span-12 lg:col-span-3">
+        <h2 class="label label-star text-muted" data-reveal>{t.service.about}</h2>
+      </div>
+      <p class="col-span-12 lg:col-span-9 lead" data-words>{s.description}</p>
+    </div>
+
+    <div class="mt-20 lg:mt-32 grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+      <div class="col-span-12 lg:col-span-3">
+        <span class="label label-star text-muted" data-reveal>{t.service.included}</span>
+      </div>
+      <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>
+        {incBefore}<span class="accent">{incAccent}</span>{incAfter}<span class="dot">.</span>
+      </h2>
+    </div>
+    <div class="mt-12 lg:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-2" data-reveal-group>
+      {
+        s.included.map((item, i) => (
+          <article class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-7 lg:p-8 flex flex-col gap-10 min-h-56">
+            <span class="label text-faint">{twoDigits(i + 1)}</span>
+            <div class="mt-auto">
+              <h3 class="text-xl lg:text-2xl font-bold tracking-[-0.035em] leading-[1.1]">{item.title}</h3>
+              <p class="mt-3 text-muted leading-relaxed">{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Cómo lo trabajamos -->
+  <section class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby="steps-title">
+    <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+      <h2 id="steps-title" class="col-span-12 lg:col-span-8 display display-lg" data-split>{t.service.process}<span class="dot">.</span></h2>
+      <p class="col-span-12 lg:col-span-4 text-lg text-muted leading-snug max-w-md lg:justify-self-end lg:pb-3" data-reveal>
+        {t.service.processIntro}
+      </p>
+    </div>
+    <ol class="mt-14 lg:mt-24 border-t border-line">
+      {
+        s.steps.map((step, i) => (
+          <li class="grid grid-cols-12 gap-x-6 gap-y-3 py-8 lg:py-11 border-b border-line" data-reveal>
+            <span class="col-span-12 lg:col-span-3 label text-muted pt-2">({threeDigits(i + 1)})</span>
+            <h3 class="col-span-12 lg:col-span-4 text-[clamp(1.5rem,2.6vw,2.4rem)] font-medium tracking-[-0.035em] leading-[1.05]">{step.title}</h3>
+            <p class="col-span-12 lg:col-span-5 text-lg text-muted leading-relaxed">{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Para quién + resultados + proyectos -->
+  <section class="panel theme-light shell py-20 lg:py-32 space-y-24 lg:space-y-32">
+    <div class="grid grid-cols-12 gap-x-6 gap-y-14">
+      {
+        [
+          { title: t.service.ideal, items: s.ideal },
+          { title: t.service.outcomes, items: s.outcomes },
+        ].map((b) => (
+          <div class="col-span-12 lg:col-span-6 lg:pr-10" data-reveal>
+            <h2 class="label label-star text-muted mb-6">{b.title}</h2>
+            <ul class="border-t border-line">
+              {b.items.map((item, i) => (
+                <li class="flex gap-5 py-5 border-b border-line text-lg leading-snug">
+                  <span class="label text-faint pt-2">{twoDigits(i + 1)}</span>
+                  <span class="font-medium">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      related.length > 0 && (
+        <div>
+          <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+            <div class="col-span-12 lg:col-span-3">
+              <span class="label label-star text-muted" data-reveal>{t.service.related}</span>
+            </div>
+            <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>
+              {relBefore}<span class="accent">{relAccent}</span>{relAfter}<span class="dot">.</span>
+            </h2>
+          </div>
+          <div class="mt-12 lg:mt-16 grid md:grid-cols-2 gap-x-6 gap-y-14">
+            {related.map((project, i) => (
+              <div data-reveal>
+                <ProjectCard project={project} index={i} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </section>
+
+  <Faq items={s.faq} title={t.service.faqTitle} intro={t.service.faqIntro(s.title)} id="faq-service" />
+
+  <!-- Siguiente servicio -->
+  <a href={localePath(lang, 'services', next.slug)} class="group theme-dark block bg-bg text-fg shell py-16 lg:py-24 border-t border-line" data-cursor={t.common.view}>
+    <p class="label label-star text-muted mb-8">{t.service.next}</p>
+    <div class="flex items-end justify-between gap-6">
+      <p class="min-w-0 display display-md max-w-[18ch] transition-colors duration-500 group-hover:text-accent">{next.title}</p>
+      <span class="shrink-0 grid place-items-center w-12 h-12 sm:w-14 sm:h-14 lg:w-20 lg:h-20 rounded-full border border-line text-2xl transition-all duration-500 group-hover:bg-accent group-hover:border-accent group-hover:text-black group-hover:rotate-45">
+        <Arrow />
+      </span>
+    </div>
+  </a>
+
+  <Contact />
+</Site>

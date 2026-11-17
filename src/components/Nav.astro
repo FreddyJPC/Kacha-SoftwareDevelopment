@@ -1,0 +1,158 @@
+---
+import { site, socials } from '../data/site';
+import { anchorPath, getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { twoDigits } from '../lib/projects';
+import Button from './Button.astro';
+import LangSwitch from './LangSwitch.astro';
+import Star from './Star.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const links = [
+  { label: t.nav.services, href: localePath(lang, 'services') },
+  { label: t.nav.projects, href: localePath(lang, 'projects') },
+  { label: t.nav.process, href: anchorPath(lang, t.ids.process) },
+  { label: t.nav.pricing, href: localePath(lang, 'pricing') },
+  { label: t.nav.about, href: localePath(lang, 'about') },
+];
+const contact = localePath(lang, 'contact');
+const current = Astro.url.pathname;
+const isActive = (href: string) => !href.includes('#') && href !== localePath(lang) && current.startsWith(href);
+---
+
+<header data-nav class="site-nav theme-dark fixed inset-x-0 top-0 z-50 px-[var(--inset)] pt-[var(--inset)]">
+  <div class="nav-bar flex items-center justify-between gap-3 rounded-full pl-5 pr-2 h-14 text-fg">
+    <a href={localePath(lang)} class="logo flex items-center gap-2.5 font-bold text-[1.1rem] tracking-[0.06em] whitespace-nowrap" title={`${site.name}, ${t.nav.home}`}>
+      <Star class="logo-star w-6 h-6 text-accent" />
+      <span>KACHA</span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8 text-[0.95rem] font-medium" aria-label={t.nav.main}>
+      {links.map((item) => <a href={item.href} class="link" aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <span class="hidden 2xl:inline-flex label text-muted mr-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-[pulse-dot_2s_infinite]"></span>
+        {t.common.availability}
+      </span>
+      <LangSwitch class="max-[359px]:hidden" />
+      <Button href={contact} variant="accent" magnetic={false} class="!text-sm hidden sm:inline-flex">{t.common.cta}</Button>
+      <button
+        type="button"
+        data-menu-toggle
+        data-label-open={t.nav.openMenu}
+        data-label-close={t.nav.closeMenu}
+        class="menu-toggle lg:hidden grid place-items-center w-10 h-10 rounded-full bg-fg text-bg"
+        aria-label={t.nav.openMenu}
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <span class="relative block w-4 h-2.5">
+          <i></i><i></i>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="menu" data-menu class="mobile-menu theme-dark fixed inset-0 z-40 bg-bg text-fg flex flex-col justify-between gap-8 px-[var(--gutter)] pt-24 pb-8 overflow-y-auto lg:hidden">
+  <nav class="flex flex-col" aria-label={t.nav.mobile}>
+    {
+      [...links, { label: t.nav.contact, href: contact }].map((item, i) => (
+        <a href={item.href} class="menu-link flex items-baseline gap-4 py-3 border-b border-line" style={`--i:${i}`}>
+          <span class="label text-faint">{twoDigits(i + 1)}</span>
+          <span class="display text-[clamp(2rem,10vw,3.75rem)]">{item.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-wrap items-center gap-3">
+      <Button href={contact} variant="accent" magnetic={false} class="w-fit">{t.common.cta}</Button>
+      <LangSwitch />
+    </div>
+    <div class="flex flex-wrap gap-x-6 gap-y-2 text-muted">
+      {socials.map((s) => <a href={s.href} target="_blank" rel="noopener noreferrer" class="link">{s.label}</a>)}
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-nav {
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .site-nav.is-hidden {
+    transform: translateY(-120%);
+  }
+  .nav-bar {
+    background: rgb(12 14 13 / 0.72);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.09);
+  }
+  .logo :global(.logo-star) {
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .logo:hover :global(.logo-star) {
+      transform: rotate(180deg) scale(1.15);
+    }
+  }
+  nav a[aria-current='page'] {
+    color: var(--color-accent);
+  }
+  .menu-toggle i {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      top 0.5s var(--ease-out-expo);
+  }
+  .menu-toggle i:first-child {
+    top: 0;
+  }
+  .menu-toggle i:last-child {
+    top: calc(100% - 1.5px);
+  }
+  :global(.menu-open) .menu-toggle i:first-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(45deg);
+  }
+  :global(.menu-open) .menu-toggle i:last-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(-45deg);
+  }
+  .mobile-menu {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+    transition:
+      clip-path 0.8s var(--ease-out-expo),
+      visibility 0s 0.8s;
+  }
+  :global(.menu-open) .mobile-menu {
+    clip-path: inset(0);
+    visibility: visible;
+    transition:
+      clip-path 0.8s var(--ease-out-expo),
+      visibility 0s;
+  }
+  .menu-link {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+  :global(.menu-open) .menu-link {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.8s var(--ease-out-expo) calc(0.15s + var(--i) * 0.06s),
+      transform 0.8s var(--ease-out-expo) calc(0.15s + var(--i) * 0.06s);
+  }
+</style>

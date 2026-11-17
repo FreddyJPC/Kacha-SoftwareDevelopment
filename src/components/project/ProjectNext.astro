@@ -1,0 +1,22 @@
+---
+/** Enlace grande al siguiente proyecto. */
+import Arrow from '../Arrow.astro';
+import { getLang, localePath } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import type { Project } from '../../lib/projects';
+
+interface Props { project: Project }
+const { project } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+---
+
+<a href={localePath(lang, 'projects', project.slug)} class="group theme-dark block bg-bg text-fg shell py-20 lg:py-32" data-cursor={t.common.view}>
+  <p class="label label-star text-muted mb-8">{t.project.next}</p>
+  <div class="flex items-end justify-between gap-6">
+    <p class="min-w-0 display display-md max-w-[18ch] transition-colors duration-500 group-hover:text-accent">{project.data.title}</p>
+    <span class="shrink-0 grid place-items-center w-12 h-12 sm:w-14 sm:h-14 lg:w-20 lg:h-20 rounded-full border border-line text-2xl transition-all duration-500 group-hover:bg-accent group-hover:border-accent group-hover:text-black group-hover:rotate-45">
+      <Arrow />
+    </span>
+  </div>
+</a>

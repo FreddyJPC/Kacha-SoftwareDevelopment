@@ -1,0 +1,31 @@
+---
+import { marquee } from '../data/stack';
+import Star from './Star.astro';
+const items = [...marquee, ...marquee];
+---
+
+<div class="theme-dark bg-bg text-fg py-7 overflow-hidden border-y border-line" aria-hidden="true">
+  <div class="marquee flex w-max">
+    {
+      [0, 1].map(() => (
+        <ul class="flex shrink-0 items-center">
+          {items.map((t) => (
+            <li class="flex items-center text-[clamp(1.25rem,2.2vw,2rem)] font-medium tracking-tight text-fg/80">
+              <span class="px-[1.1em]">{t}</span>
+              <Star class="w-[0.6em] h-[0.6em] text-accent" />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    animation: marquee 48s linear infinite;
+  }
+  .marquee:hover {
+    animation-play-state: paused;
+  }
+</style>

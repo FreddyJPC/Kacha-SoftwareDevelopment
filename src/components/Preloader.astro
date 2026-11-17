@@ -1,0 +1,20 @@
+---
+/** Pantalla de carga con contador (solo en la primera visita de la sesión). */
+import { site } from '../data/site';
+import Star from './Star.astro';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+const t = useTranslations(getLang(Astro)).preloader;
+---
+
+<div data-preloader class="preloader theme-dark fixed inset-0 z-[90] bg-bg text-fg flex-col justify-between p-[var(--gutter)]" aria-hidden="true">
+  <span class="label text-muted"><Star class="w-3.5 h-3.5 text-accent" /> {site.fullName}</span>
+  <div>
+    <div class="flex items-end justify-between">
+      <span class="display text-[clamp(4rem,16vw,14rem)] tabular-nums" data-preloader-count>000</span>
+      <span class="label text-muted pb-4">{t.loading}</span>
+    </div>
+    <div class="h-px bg-line mt-2"><div data-preloader-bar class="h-full bg-accent origin-left scale-x-0"></div></div>
+  </div>
+</div>

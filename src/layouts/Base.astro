@@ -1,0 +1,106 @@
+---
+/**
+ * Documento base: <head>, SEO (incluye hreflang), fuentes y scripts. No incluye navegación ni footer
+ * (eso lo añade Site.astro). El idioma se deduce de la URL.
+ */
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/geist-mono';
+import '@fontsource/just-me-again-down-here/latin-400.css';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Cursor from '../components/Cursor.astro';
+import { site, socials } from '../data/site';
+import { switchLangPath } from '../i18n/alternates';
+import { defaultLang, getLang, localeMeta, locales } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const { title, description = t.meta.description, image = '/og.png', noindex = false } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : t.meta.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+// Versiones de esta misma página en cada idioma (para buscadores)
+const alternates = locales.map((code) => ({ code: localeMeta[code].html, href: new URL(switchLangPath(Astro.url.pathname, code), Astro.site) }));
+const xDefault = new URL(switchLangPath(Astro.url.pathname, defaultLang), Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.fullName,
+  description: t.meta.description,
+  url: Astro.site?.href,
+  image: new URL('/og.png', Astro.site).href,
+  email: site.email,
+  telephone: site.phone,
+  priceRange: '$$',
+  address: { '@type': 'PostalAddress', addressLocality: 'Cuenca', addressRegion: 'Azuay', addressCountry: 'EC' },
+  areaServed: ['EC', 'Latinoamérica'],
+  sameAs: socials.filter((s) => s.label !== 'WhatsApp').map((s) => s.href),
+};
+---
+
+<!doctype html>
+<html lang={localeMeta[lang].html}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {!noindex && alternates.map((a) => <link rel="alternate" hreflang={a.code} href={a.href} />)}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={xDefault} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/fonts/Satoshi/Satoshi-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Satoshi/Satoshi-Medium.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeMeta[lang].og} />
+    {locales.filter((c) => c !== lang).map((c) => <meta property="og:locale:alternate" content={localeMeta[c].og} />)}
+    <meta property="og:site_name" content={site.fullName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Marca el documento antes de pintar: evita parpadeos en las animaciones -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        try {
+          if (!sessionStorage.getItem('kacha-visited') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            root.classList.add('is-loading');
+          }
+        } catch (e) {}
+        document.addEventListener('astro:after-swap', function () {
+          document.documentElement.classList.add('js');
+        });
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+
+  <body id="top" class="theme-dark">
+    <slot />
+    <Cursor />
+    <script>
+      import '../scripts/app.ts';
+    </script>
+  </body>
+</html>

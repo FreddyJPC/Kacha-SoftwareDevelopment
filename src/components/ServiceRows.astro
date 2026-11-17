@@ -1,0 +1,74 @@
+---
+/**
+ * Acordeón de servicios (portada). Cada fila abre la descripción, las etiquetas,
+ * el precio de partida y el enlace a la página del servicio.
+ */
+import { services } from '../data/services';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { threeDigits } from '../lib/projects';
+import Arrow from './Arrow.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+---
+
+<div class="border-t border-line" data-reveal-group>
+  {
+    services[lang].map((s, i) => (
+      <details class="acc group border-b border-line" name="services" open={i === 0}>
+        <summary class="grid grid-cols-12 gap-x-6 items-center py-7 lg:py-9">
+          <span class="col-span-2 lg:col-span-3 label text-muted">({threeDigits(i + 1)})</span>
+          <h3 class="col-span-8 lg:col-span-7 text-[clamp(1.4rem,3.4vw,3rem)] font-medium tracking-[-0.035em] leading-[1.05] transition-colors duration-300 group-hover:text-accent group-open:text-accent">
+            {s.title}
+          </h3>
+          <span class="col-span-2 justify-self-end acc-icon grid place-items-center w-11 h-11 lg:w-14 lg:h-14 rounded-full border border-line" aria-hidden="true">
+            <i></i><i></i>
+          </span>
+        </summary>
+        <div class="grid grid-cols-12 gap-x-6 gap-y-6 pb-10 lg:pb-14">
+          <div class="col-span-12 lg:col-span-5 lg:col-start-4">
+            <p class="text-lg lg:text-xl text-muted leading-snug">{s.summary}</p>
+            <a href={localePath(lang, 'services', s.slug)} class="group/link mt-6 inline-flex items-center gap-2 font-medium text-fg">
+              <span class="link">{t.services.view}</span>
+              <Arrow class="w-3.5 h-3.5 text-accent transition-transform duration-500 group-hover/link:rotate-45" />
+            </a>
+          </div>
+          <div class="col-span-12 lg:col-span-3 lg:col-start-10 flex flex-col gap-5">
+            <ul class="flex flex-wrap content-start gap-2">
+              {s.tags.map((t) => <li class="tag bg-fg text-bg !border-transparent font-medium">{t}</li>)}
+            </ul>
+            <p class="label text-muted">{s.from} · {s.timeline}</p>
+          </div>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .acc-icon {
+    position: relative;
+    transition:
+      background-color 0.4s var(--ease-out-expo),
+      border-color 0.4s;
+  }
+  .acc-icon i {
+    position: absolute;
+    width: 30%;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .acc-icon i:last-child {
+    transform: rotate(90deg);
+  }
+  .acc[open] .acc-icon {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #000;
+  }
+  .acc[open] .acc-icon i:last-child {
+    transform: rotate(0deg);
+  }
+</style>

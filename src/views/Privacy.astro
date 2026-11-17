@@ -1,0 +1,71 @@
+---
+/**
+ * Política de privacidad: /privacidad/ y /en/privacy/.
+ * PROVISIONAL: texto base; revísalo con un asesor legal antes de publicar.
+ */
+import Site from '../layouts/Site.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { site } from '../data/site';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang).privacyPage;
+const mail = `mailto:${site.email}`;
+---
+
+<Site title={t.title} description={t.description}>
+  <PageIntro label={t.label} title={t.title} size="lg">
+    {t.intro}
+  </PageIntro>
+
+  <section class="panel theme-light shell py-16 lg:py-24 mb-[var(--inset)]">
+    {
+      lang === 'es' ? (
+        <div class="prose max-w-3xl mx-auto" data-reveal>
+          <h2>Qué datos recopilamos</h2>
+          <p>
+            Cuando completas el formulario de contacto guardamos lo que nos envías: tu <strong>nombre</strong>, <strong>correo electrónico</strong>, <strong>teléfono</strong> y la <strong>descripción de tu proyecto</strong>. Si nos escribes por WhatsApp o correo, recibimos los datos que compartas en esa conversación.
+          </p>
+          <h2>Para qué los usamos</h2>
+          <ul>
+            <li>Responder a tu consulta y preparar una cotización.</li>
+            <li>Dar seguimiento al proyecto si decides trabajar con nosotros.</li>
+          </ul>
+          <p>No vendemos ni compartimos tus datos con terceros con fines publicitarios, y no te enviamos comunicaciones comerciales que no hayas solicitado.</p>
+          <h2>Dónde se almacenan</h2>
+          <p>Los datos del formulario se guardan en una base de datos gestionada con acceso restringido al equipo de {site.name}. Conservamos la información mientras dure la relación comercial o hasta que nos pidas eliminarla.</p>
+          <h2>Tus derechos</h2>
+          <p>
+            Puedes solicitar en cualquier momento acceder, corregir o eliminar tus datos escribiendo a <a href={mail}>{site.email}</a>. Atendemos estas solicitudes conforme a la Ley Orgánica de Protección de Datos Personales del Ecuador.
+          </p>
+          <h2>Cookies</h2>
+          <p>Este sitio no utiliza cookies publicitarias. Solo se guarda en tu navegador, de forma temporal, información técnica necesaria para el funcionamiento de la página.</p>
+          <p class="label !mt-12">Última actualización: noviembre de 2026</p>
+        </div>
+      ) : (
+        <div class="prose max-w-3xl mx-auto" data-reveal>
+          <h2>What data we collect</h2>
+          <p>
+            When you fill out the contact form we store what you send us: your <strong>name</strong>, <strong>email</strong>, <strong>phone number</strong> and <strong>project description</strong>. If you write to us via WhatsApp or email, we receive whatever you share in that conversation.
+          </p>
+          <h2>What we use it for</h2>
+          <ul>
+            <li>To answer your inquiry and prepare a quote.</li>
+            <li>To follow up on the project if you decide to work with us.</li>
+          </ul>
+          <p>We don’t sell or share your data with third parties for advertising, and we don’t send you marketing you haven’t asked for.</p>
+          <h2>Where it is stored</h2>
+          <p>Form data is stored in a managed database with access restricted to the {site.name} team. We keep the information for as long as the business relationship lasts or until you ask us to delete it.</p>
+          <h2>Your rights</h2>
+          <p>
+            You can ask at any time to access, correct or delete your data by writing to <a href={mail}>{site.email}</a>. We handle these requests in accordance with Ecuador’s Personal Data Protection Law (LOPDP).
+          </p>
+          <h2>Cookies</h2>
+          <p>This site does not use advertising cookies. Only technical information needed for the page to work is stored temporarily in your browser.</p>
+          <p class="label !mt-12">Last updated: November 2026</p>
+        </div>
+      )
+    }
+  </section>
+</Site>

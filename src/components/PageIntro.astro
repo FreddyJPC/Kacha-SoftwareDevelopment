@@ -1,0 +1,60 @@
+---
+/**
+ * Cabecera de las páginas internas: etiqueta, título gigante y texto de apoyo.
+ * `accent` es la parte del título en serif itálica (opcional); `back` añade un enlace de regreso.
+ */
+import Arrow from './Arrow.astro';
+
+interface Props {
+  label: string;
+  title: string;
+  accent?: string;
+  after?: string;
+  count?: number;
+  size?: 'xl' | 'lg';
+  back?: { label: string; href: string };
+}
+const { label, title, accent, after, count, size = 'xl', back } = Astro.props;
+---
+
+<section data-intro class="theme-dark bg-bg text-fg shell relative pt-36 lg:pt-48 pb-14 lg:pb-20 overflow-hidden">
+  <div class="intro-glow" aria-hidden="true"></div>
+  <div class="relative">
+    {
+      back ? (
+        <a href={back.href} class="group inline-flex items-center gap-2 label text-muted mb-10" data-reveal>
+          <Arrow class="w-3 h-3 -rotate-[135deg] transition-transform duration-500 group-hover:-translate-x-1" />
+          {back.label}
+        </a>
+      ) : (
+        <p class="label label-star text-muted mb-8" data-reveal>{label}</p>
+      )
+    }
+    <h1 class:list={['display max-w-[18ch]', size === 'xl' ? 'display-xl' : 'display-lg']} data-split>
+      {title}{accent && <span class="accent text-[1.06em] text-accent">{accent}</span>}{after}<span class="dot">.</span>{count !== undefined && <sup class="ml-[0.15em] align-top text-[0.14em] font-medium tracking-normal text-muted relative top-[0.7em] font-mono">({String(count).padStart(2, '0')})</sup>}
+    </h1>
+    {
+      Astro.slots.has('default') && (
+        <div class="mt-8 text-xl lg:text-2xl text-muted max-w-2xl leading-snug" data-reveal data-delay="0.25">
+          <slot />
+        </div>
+      )
+    }
+    <slot name="after" />
+  </div>
+</section>
+
+<style>
+  .intro-glow {
+    position: absolute;
+    right: -20vmax;
+    top: -34vmax;
+    width: 62vmax;
+    height: 62vmax;
+    border-radius: 999px;
+    filter: blur(80px);
+    opacity: 0.5;
+    pointer-events: none;
+    background: radial-gradient(closest-side, var(--color-accent) 0%, var(--color-pine) 45%, rgb(0 117 78 / 0) 100%);
+  }
+</style>

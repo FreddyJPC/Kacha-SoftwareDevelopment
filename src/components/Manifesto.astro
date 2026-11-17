@@ -1,0 +1,38 @@
+---
+/** Frase que se ilumina con el scroll + cifras de la agencia. */
+import { about } from '../data/about';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Button from './Button.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang).manifesto;
+const { manifesto, stats } = about[lang];
+---
+
+<section class="shell pt-16 lg:pt-24 pb-20 lg:pb-28" aria-labelledby="manifesto-title">
+  <div class="grid grid-cols-12 gap-x-6 gap-y-10">
+    <div class="col-span-12 lg:col-span-3">
+      <h2 id="manifesto-title" class="label label-star text-muted" data-reveal>{t.label}</h2>
+    </div>
+    <div class="col-span-12 lg:col-span-9">
+      <p class="lead" data-words>{manifesto}</p>
+      <div class="mt-10" data-reveal>
+        <Button href={localePath(lang, 'about')} variant="solid">{t.cta}</Button>
+      </div>
+    </div>
+  </div>
+
+  <dl class="mt-20 lg:mt-28 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 border-t border-line pt-10" data-reveal-group>
+    {
+      stats.map((s) => (
+        <div class="flex flex-col-reverse justify-end gap-4">
+          <dt class="text-muted leading-snug max-w-[14rem]">{s.label}</dt>
+          <dd class="display text-[clamp(3.25rem,8vw,7.5rem)] leading-none tabular-nums">
+            <span data-count={s.value}>{s.value}</span>{s.suffix && <span class="text-accent-ink">{s.suffix}</span>}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
