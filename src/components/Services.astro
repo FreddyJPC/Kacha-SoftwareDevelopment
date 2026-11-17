@@ -1,26 +1,28 @@
 ---
+/** Servicios de la portada: cuadrícula tipo bento (la primera tarjeta en verde, como en el sitio original). */
 import { services } from '../data/services';
 import { getLang, localePath } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import Button from './Button.astro';
 import SectionHead from './SectionHead.astro';
-import ServiceRows from './ServiceRows.astro';
+import ServiceCard from './ServiceCard.astro';
 
 const lang = getLang(Astro);
 const t = useTranslations(lang);
 ---
 
-<section id={t.ids.services} class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby="services-title">
-  <SectionHead label={t.services.label} title={t.services.title} count={services[lang].length} id="services-title">
-    {t.services.intro}
-  </SectionHead>
+<section id={t.ids.services} class="theme-dark bg-bg text-fg shell relative py-24 lg:py-32 overflow-hidden" aria-labelledby="services-title">
+  <div class="halo halo-green -bottom-[30%] -left-[25%] opacity-60" aria-hidden="true"></div>
+  <div class="relative">
+    <SectionHead label={t.services.label} title={t.services.heading} id="services-title">
+      {t.services.intro}
+    </SectionHead>
 
-  <div class="mt-14 lg:mt-24">
-    <ServiceRows />
-  </div>
+    <div class="mt-14 lg:mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-2" data-reveal-group>
+      {services[lang].map((s, i) => <ServiceCard service={s} featured={i === 0} class="min-h-[20rem]" />)}
+    </div>
 
-  <div class="mt-12 grid grid-cols-12 gap-x-6">
-    <div class="col-span-12 lg:col-start-4 lg:col-span-9 flex flex-wrap gap-3" data-reveal>
+    <div class="mt-10 flex flex-wrap justify-center gap-3" data-reveal>
       <Button href={localePath(lang, 'services')} variant="accent">{t.services.all}</Button>
       <Button href={localePath(lang, 'contact')} variant="ghost">{t.services.quote}</Button>
     </div>

@@ -81,7 +81,7 @@ src/
 ├── views/                 Páginas completas, compartidas por ambos idiomas
 ├── scripts/
 │   ├── app.ts             Ciclo de vida (inicia y limpia en cada navegación)
-│   └── modules/           scroll, nav, reveal, pointer, clock, preloader, form, filter
+│   └── modules/           scroll, nav, reveal, pointer, preloader, form, filter
 └── styles/global.css      Tokens de diseño y componentes CSS
 ```
 
@@ -172,6 +172,14 @@ Los tokens están al inicio de `src/styles/global.css` (`@theme`). Paleta princi
 ampliada con verdes profundos, menta, un azul de apoyo y los pasteles de las notas del proceso.
 Los bloques usan `theme-dark`, `theme-light` o `theme-accent` para alternar fondos.
 
+Señas visuales propias de Kacha (para mantener la coherencia al agregar secciones):
+
+- Títulos con una palabra destacada en serif itálica verde (`.accent`), sin punto final.
+- Insignias en píldora con la estrella (`.label-star`) sobre cada título, y números en casillas (`.num`).
+- Fondos con trama de puntos (`.dots`) y halos verde/azul (`.halo-green`, `.halo-blue`).
+- Tarjetas redondeadas para servicios, proyectos, cifras y listas; listas con checks (`CheckList`) y procesos como línea de tiempo (`Timeline`).
+- Botones que se rellenan desde abajo con flecha que se reemplaza.
+
 ## Animaciones
 
 Se activan con atributos en el HTML (ver `src/scripts/modules/reveal.ts` y `pointer.ts`):
@@ -179,13 +187,14 @@ Se activan con atributos en el HTML (ver `src/scripts/modules/reveal.ts` y `poin
 | Atributo            | Efecto                                       |
 | :------------------ | :------------------------------------------- |
 | `data-split`        | Título que entra línea por línea             |
-| `data-words`        | Párrafo que se ilumina palabra por palabra   |
+| `data-mark`         | Dibuja el subrayado verde de los `.mark` al aparecer (en `about.ts` se escriben entre `*asteriscos*`) |
+| `data-progress`     | Línea de tiempo que se rellena con el scroll |
 | `data-reveal`       | Aparece con un fade hacia arriba             |
 | `data-reveal-group` | Los hijos aparecen en cascada                |
 | `data-count="12"`   | Número que cuenta desde 0                    |
 | `data-parallax="8"` | Desplazamiento ligado al scroll              |
 | `data-magnetic`     | El elemento sigue ligeramente al cursor      |
-| `data-cursor="Ver"` | Muestra el cursor circular con ese texto     |
+| `data-cursor="Ver"` | Muestra una píldora verde con ese texto junto al cursor |
 | `data-shine`        | Brillo que sigue al cursor dentro del bloque |
 
 Todas se desactivan con "reducir movimiento", y el contenido es visible aunque no cargue JavaScript.

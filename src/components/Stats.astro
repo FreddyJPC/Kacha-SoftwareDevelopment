@@ -1,0 +1,20 @@
+---
+/** Cifras de la agencia en tarjetas; la última va en verde. Los datos están en src/data/about.ts */
+import { about } from '../data/about';
+import { getLang } from '../i18n/config';
+
+const { stats } = about[getLang(Astro)];
+---
+
+<dl class="grid grid-cols-2 lg:grid-cols-4 gap-2" data-reveal-group>
+  {
+    stats.map((s, i) => (
+      <div class:list={['stat rounded-[calc(var(--radius-panel)*0.7)] p-6 lg:p-7 flex flex-col-reverse justify-end gap-6 min-h-44', i === stats.length - 1 ? 'theme-accent bg-bg text-fg' : 'bg-surface']}>
+        <dt class="text-muted leading-snug max-w-[14rem]">{s.label}</dt>
+        <dd class="display text-[clamp(2.75rem,5.4vw,4.75rem)] leading-none tabular-nums">
+          <span data-count={s.value}>{s.value}</span>{s.suffix && <span class="text-accent-ink">{s.suffix}</span>}
+        </dd>
+      </div>
+    ))
+  }
+</dl>

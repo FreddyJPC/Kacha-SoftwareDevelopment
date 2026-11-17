@@ -1,6 +1,6 @@
 ---
-/** Enlace grande al siguiente proyecto. */
-import Arrow from '../Arrow.astro';
+/** Tarjeta grande hacia el siguiente proyecto, con su portada. */
+import ProjectCover from '../ProjectCover.astro';
 import { getLang, localePath } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
 import type { Project } from '../../lib/projects';
@@ -11,12 +11,36 @@ const lang = getLang(Astro);
 const t = useTranslations(lang);
 ---
 
-<a href={localePath(lang, 'projects', project.slug)} class="group theme-dark block bg-bg text-fg shell py-20 lg:py-32" data-cursor={t.common.view}>
-  <p class="label label-star text-muted mb-8">{t.project.next}</p>
-  <div class="flex items-end justify-between gap-6">
-    <p class="min-w-0 display display-md max-w-[18ch] transition-colors duration-500 group-hover:text-accent">{project.data.title}</p>
-    <span class="shrink-0 grid place-items-center w-12 h-12 sm:w-14 sm:h-14 lg:w-20 lg:h-20 rounded-full border border-line text-2xl transition-all duration-500 group-hover:bg-accent group-hover:border-accent group-hover:text-black group-hover:rotate-45">
-      <Arrow />
-    </span>
-  </div>
-</a>
+<div class="theme-dark bg-bg text-fg shell py-16 lg:py-24">
+  <a href={localePath(lang, 'projects', project.slug)} class="next group grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-center gap-6 lg:gap-12 rounded-[var(--radius-panel)] bg-surface p-3 lg:p-4" data-cursor={t.common.view}>
+    <div class="overflow-hidden rounded-[calc(var(--radius-panel)*0.75)] aspect-[4/3]">
+      <ProjectCover project={project} sizes="(min-width: 768px) 45vw, 100vw" />
+    </div>
+    <div class="px-3 pb-4 md:px-0 md:pr-6 lg:pr-10">
+      <p class="label label-star text-muted mb-6 !bg-bg">{t.project.next}</p>
+      <p class="display display-md max-w-[16ch] transition-colors duration-500 group-hover:text-accent">{project.data.title}</p>
+      <p class="mt-4 text-muted max-w-md leading-snug">{project.data.summary}</p>
+      <span class="mt-8 inline-grid place-items-center w-14 h-14 rounded-full bg-accent text-black transition-transform duration-500 group-hover:rotate-45" aria-hidden="true">
+        <svg viewBox="0 0 16 16" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"></path></svg>
+      </span>
+    </div>
+  </a>
+</div>
+
+<style>
+  .next {
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: box-shadow 0.5s ease;
+  }
+  .next :global(.cover-media) {
+    transition: transform 1.1s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .next:hover {
+      box-shadow: inset 0 0 0 1px rgb(0 229 153 / 0.45);
+    }
+    .next:hover :global(.cover-media) {
+      transform: scale(1.04);
+    }
+  }
+</style>

@@ -2,7 +2,7 @@
 import type { Lang } from '../i18n/config';
 
 export interface About {
-  /** Frase que se ilumina con el scroll en la portada */
+  /** Frase principal de la portada. El texto entre *asteriscos* se subraya en verde al aparecer */
   manifesto: string;
   /** Líneas de enfoque del hero */
   focus: string[];
@@ -20,7 +20,7 @@ const founderLink = 'https://www.linkedin.com/in/freddy-javier-paguay-a906b2354/
 export const about: Record<Lang, About> = {
   es: {
     manifesto:
-      'Somos un estudio de software de Cuenca, Ecuador. Diseñamos, construimos y automatizamos productos digitales que ordenan la operación y hacen crecer a negocios reales.',
+      'Somos un estudio de software de Cuenca, Ecuador. *Diseñamos, construimos y automatizamos* productos digitales que ordenan la operación y *hacen crecer a negocios reales*.',
     focus: ['Sitios y tiendas online', 'CRM & ERP a medida', 'Automatización e IA', 'Diseño UI/UX'],
     stats: [
       { value: 12, suffix: '+', label: 'Proyectos entregados de inicio a fin' },
@@ -56,7 +56,7 @@ export const about: Record<Lang, About> = {
   },
   en: {
     manifesto:
-      'We are a software studio from Cuenca, Ecuador. We design, build and automate digital products that bring order to operations and help real businesses grow.',
+      'We are a software studio from Cuenca, Ecuador. *We design, build and automate* digital products that bring order to operations and *help real businesses grow*.',
     focus: ['Websites & online stores', 'Custom CRM & ERP', 'Automation & AI', 'UI/UX design'],
     stats: [
       { value: 12, suffix: '+', label: 'Projects delivered end to end' },

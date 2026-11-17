@@ -1,54 +1,44 @@
 ---
-/** Listado de proyectos con filtro por categoría: /proyectos/ y /en/projects/ */
+/** Listado de proyectos en tarjetas, con filtro por categoría: /proyectos/ y /en/projects/ */
 import Site from '../layouts/Site.astro';
 import PageIntro from '../components/PageIntro.astro';
-import ProjectCover from '../components/ProjectCover.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import Contact from '../components/Contact.astro';
-import Arrow from '../components/Arrow.astro';
-import { getLang, localePath } from '../i18n/config';
+import { getLang } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
-import { getProjects, toKey, twoDigits } from '../lib/projects';
+import { getProjects, toKey } from '../lib/projects';
 
 const lang = getLang(Astro);
 const t = useTranslations(lang);
 const p = t.projectsPage;
 const projects = await getProjects(lang);
 const categories = [...new Set(projects.map((item) => item.data.category))];
+const [before, accent, after] = p.heading;
 ---
 
 <Site title={p.title} description={p.description}>
-  <PageIntro label={p.label} title={p.title} count={projects.length}>
+  <PageIntro label={p.label} title={before} accent={accent} after={after} center>
     {p.intro}
     <Fragment slot="after">
-      <div data-filter-group class="mt-12 flex flex-wrap gap-2" role="group" aria-label={p.filter} data-reveal data-delay="0.35">
-        <button type="button" class="filter" data-filter="all" aria-pressed="true">{p.all}</button>
-        {categories.map((c) => <button type="button" class="filter" data-filter={toKey(c)} aria-pressed="false">{c}</button>)}
+      <div data-filter-group class="mt-12 flex flex-wrap justify-center gap-2" role="group" aria-label={p.filter}>
+        <button type="button" class="filter" data-filter="all" aria-pressed="true">{p.all} <span class="count">{projects.length}</span></button>
+        {
+          categories.map((c) => (
+            <button type="button" class="filter" data-filter={toKey(c)} aria-pressed="false">
+              {c} <span class="count">{projects.filter((item) => item.data.category === c).length}</span>
+            </button>
+          ))
+        }
       </div>
     </Fragment>
   </PageIntro>
 
-  <section class="panel theme-light shell py-6 lg:py-10 mb-[var(--inset)]" aria-label={p.list}>
-    <ul>
+  <section class="panel theme-light shell py-8 lg:py-12 mb-[var(--inset)]" aria-label={p.list}>
+    <ul class="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
       {
         projects.map((item, i) => (
-          <li class="item border-b border-line" data-filter-item={toKey(item.data.category)} data-reveal>
-            <a href={localePath(lang, 'projects', item.slug)} class="row group grid grid-cols-12 gap-x-6 gap-y-3 items-center py-8 lg:py-10" data-cursor={t.common.view}>
-              <span class="col-span-12 lg:col-span-1 label text-muted">({twoDigits(i + 1)})</span>
-              <div class="col-span-12 sm:col-span-7 lg:col-span-5">
-                <h2 class="row-title text-[clamp(1.6rem,3.2vw,2.9rem)] font-bold tracking-[-0.04em] leading-[1.02]">{item.data.title}</h2>
-                <p class="mt-2 text-muted max-w-xl leading-snug">{item.data.summary}</p>
-              </div>
-              <div class="hidden lg:block col-span-2 text-muted">
-                <p class="text-fg font-medium">{item.data.client}</p>
-                <p class="label mt-2">{item.data.category} — {item.data.year}</p>
-              </div>
-              <div class="col-span-12 sm:col-span-5 lg:col-span-4 flex items-center justify-end gap-5">
-                <div class="thumb w-full sm:w-56 lg:w-72 aspect-[4/3] overflow-hidden rounded-xl bg-surface">
-                  <ProjectCover project={item} sizes="(min-width: 640px) 288px, 100vw" eager={i < 3} />
-                </div>
-                <span class="hidden lg:grid row-arrow shrink-0 place-items-center w-11 h-11 rounded-full border border-line"><Arrow /></span>
-              </div>
-            </a>
+          <li class="item" data-filter-item={toKey(item.data.category)} data-reveal>
+            <ProjectCard project={item} heading="h2" eager={i < 3} sizes="(min-width: 1280px) 30vw, (min-width: 768px) 46vw, 100vw" />
           </li>
         ))
       }
@@ -61,7 +51,10 @@ const categories = [...new Set(projects.map((item) => item.data.category))];
 
 <style>
   .filter {
-    padding: 0.7em 1.15em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.7em 0.8em 0.7em 1.15em;
     border-radius: 999px;
     box-shadow: inset 0 0 0 1px var(--line);
     font-size: 0.95rem;
@@ -72,10 +65,24 @@ const categories = [...new Set(projects.map((item) => item.data.category))];
       color 0.3s ease,
       box-shadow 0.3s ease;
   }
+  .count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.6em;
+    height: 1.6em;
+    padding-inline: 0.35em;
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.78em;
+    font-weight: 700;
+  }
   .filter[aria-pressed='true'] {
     background: var(--color-accent);
     color: #000;
     box-shadow: none;
+  }
+  .filter[aria-pressed='true'] .count {
+    background: rgb(0 0 0 / 0.12);
   }
   @media (hover: hover) {
     .filter[aria-pressed='false']:hover {
@@ -84,30 +91,5 @@ const categories = [...new Set(projects.map((item) => item.data.category))];
   }
   .item[hidden] {
     display: none;
-  }
-  .item:last-of-type {
-    border-bottom: 0;
-  }
-  .row-title,
-  .row-arrow,
-  .thumb :global(.cover-media) {
-    transition:
-      transform 0.7s var(--ease-out-expo),
-      background-color 0.4s,
-      color 0.4s,
-      border-color 0.4s;
-  }
-  @media (hover: hover) {
-    .row:hover .row-title {
-      transform: translateX(0.3em);
-    }
-    .row:hover .thumb :global(.cover-media) {
-      transform: scale(1.06);
-    }
-    .row:hover .row-arrow {
-      background: var(--color-accent);
-      border-color: var(--color-accent);
-      transform: rotate(45deg);
-    }
   }
 </style>

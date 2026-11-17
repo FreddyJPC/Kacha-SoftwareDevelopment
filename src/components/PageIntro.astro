@@ -1,60 +1,57 @@
 ---
 /**
- * Cabecera de las páginas internas: etiqueta, título gigante y texto de apoyo.
- * `accent` es la parte del título en serif itálica (opcional); `back` añade un enlace de regreso.
+ * Cabecera de las páginas internas: insignia (o migas de pan), título con palabra destacada y texto de apoyo,
+ * sobre una trama de puntos con halos de luz. center=true la centra (listados y páginas simples).
  */
-import Arrow from './Arrow.astro';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
 
 interface Props {
   label: string;
   title: string;
   accent?: string;
   after?: string;
-  count?: number;
+  center?: boolean;
   size?: 'xl' | 'lg';
-  back?: { label: string; href: string };
+  crumbs?: { label: string; href: string }[];
 }
-const { label, title, accent, after, count, size = 'xl', back } = Astro.props;
+const { label, title, accent, after, center = false, size = 'xl', crumbs } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
 ---
 
-<section data-intro class="theme-dark bg-bg text-fg shell relative pt-36 lg:pt-48 pb-14 lg:pb-20 overflow-hidden">
-  <div class="intro-glow" aria-hidden="true"></div>
-  <div class="relative">
+<section data-intro class:list={['theme-dark bg-bg text-fg shell relative pt-36 lg:pt-44 pb-14 lg:pb-20 overflow-hidden', center && 'text-center']}>
+  <div class="dots absolute inset-0" aria-hidden="true"></div>
+  <div class="halo halo-green -top-[45%] -left-[18%]" aria-hidden="true"></div>
+  <div class="halo halo-blue -top-[30%] -right-[25%]" aria-hidden="true"></div>
+  <div class:list={['relative flex flex-col', center ? 'items-center' : 'items-start']}>
     {
-      back ? (
-        <a href={back.href} class="group inline-flex items-center gap-2 label text-muted mb-10" data-reveal>
-          <Arrow class="w-3 h-3 -rotate-[135deg] transition-transform duration-500 group-hover:-translate-x-1" />
-          {back.label}
-        </a>
+      crumbs ? (
+        <nav aria-label="Breadcrumb" class="label text-muted mb-9 flex flex-wrap items-center gap-2" data-reveal>
+          <a href={localePath(lang)} class="link">{t.nav.homeLabel}</a>
+          {crumbs.map((c) => (
+            <>
+              <span aria-hidden="true" class="text-accent">/</span>
+              <a href={c.href} class="link">{c.label}</a>
+            </>
+          ))}
+        </nav>
       ) : (
         <p class="label label-star text-muted mb-8" data-reveal>{label}</p>
       )
     }
     <h1 class:list={['display max-w-[18ch]', size === 'xl' ? 'display-xl' : 'display-lg']} data-split>
-      {title}{accent && <span class="accent text-[1.06em] text-accent">{accent}</span>}{after}<span class="dot">.</span>{count !== undefined && <sup class="ml-[0.15em] align-top text-[0.14em] font-medium tracking-normal text-muted relative top-[0.7em] font-mono">({String(count).padStart(2, '0')})</sup>}
+      {title}{accent && <span class="accent">{accent}</span>}{after}
     </h1>
     {
       Astro.slots.has('default') && (
-        <div class="mt-8 text-xl lg:text-2xl text-muted max-w-2xl leading-snug" data-reveal data-delay="0.25">
+        <div class:list={['mt-7 text-xl lg:text-2xl text-muted max-w-2xl leading-snug']} data-reveal data-delay="0.25">
           <slot />
         </div>
       )
     }
+  </div>
+  <div class="relative">
     <slot name="after" />
   </div>
 </section>
-
-<style>
-  .intro-glow {
-    position: absolute;
-    right: -20vmax;
-    top: -34vmax;
-    width: 62vmax;
-    height: 62vmax;
-    border-radius: 999px;
-    filter: blur(80px);
-    opacity: 0.5;
-    pointer-events: none;
-    background: radial-gradient(closest-side, var(--color-accent) 0%, var(--color-pine) 45%, rgb(0 117 78 / 0) 100%);
-  }
-</style>

@@ -1,15 +1,17 @@
 ---
+/** Footer: franja verde de llamada a la acción, columnas de enlaces y el nombre de la marca en contorno. */
 import { services } from '../data/services';
 import { site, socials } from '../data/site';
 import { anchorPath, getLang, localePath } from '../i18n/config';
 import { useTranslations } from '../i18n/ui';
 import Arrow from './Arrow.astro';
+import Button from './Button.astro';
 import Star from './Star.astro';
 
 const lang = getLang(Astro);
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
-const [line1, before, accent] = t.footer.cta;
+const [before, accent, after] = t.footer.cta;
 const links = [
   { label: t.nav.services, href: localePath(lang, 'services') },
   { label: t.nav.projects, href: localePath(lang, 'projects') },
@@ -21,34 +23,48 @@ const links = [
 ---
 
 <footer class="theme-dark bg-bg text-fg overflow-hidden">
-  <div class="shell pt-20 lg:pt-28 grid grid-cols-12 gap-x-6 gap-y-12">
-    <div class="col-span-12 lg:col-span-5">
-      <p class="label text-muted mb-5">{t.footer.start}</p>
-      <a href={localePath(lang, 'contact')} class="group flex w-fit items-start gap-3 text-[clamp(1.9rem,4.4vw,3.75rem)] font-bold tracking-[-0.045em] leading-[0.98]">
-        <span>{line1}<br />{before}<span class="accent font-normal text-accent">{accent}</span></span>
-        <Arrow class="w-[0.55em] h-[0.55em] mt-[0.18em] shrink-0 text-accent transition-transform duration-500 group-hover:rotate-45" />
+  <!-- Llamada a la acción -->
+  <div class="px-[var(--inset)] pt-[var(--inset)]">
+    <div class="theme-accent bg-bg text-fg relative overflow-hidden rounded-[var(--radius-panel)] shell py-12 lg:py-16 flex flex-wrap items-end justify-between gap-x-10 gap-y-8">
+      <Star class="cta-star absolute -right-[4rem] -top-[4rem] w-[clamp(14rem,30vw,26rem)] h-[clamp(14rem,30vw,26rem)] text-black/[0.08]" />
+      <p class="relative display display-md max-w-[16ch]">
+        {before}<span class="accent">{accent}</span>{after}
+      </p>
+      <div class="relative flex flex-wrap gap-3">
+        <Button href={localePath(lang, 'contact')} variant="dark">{t.common.cta}</Button>
+        <Button href={site.whatsapp} variant="ghost" external>WhatsApp</Button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell pt-16 lg:pt-20 grid grid-cols-12 gap-x-6 gap-y-12">
+    <div class="col-span-12 lg:col-span-4">
+      <a href={localePath(lang)} class="inline-flex items-center gap-2.5 font-bold text-xl tracking-[0.06em]">
+        <Star class="w-7 h-7 text-accent" />
+        KACHA
       </a>
-      <div class="mt-8 flex flex-col gap-1.5 text-lg">
+      <p class="mt-5 text-muted leading-relaxed max-w-xs">{t.footer.tagline}</p>
+      <div class="mt-6 flex flex-col gap-1.5">
         <a href={`mailto:${site.email}`} class="w-fit break-all"><span class="link">{site.email}</span></a>
         <a href={site.whatsapp} target="_blank" rel="noopener noreferrer" class="w-fit"><span class="link">{site.phone}</span></a>
       </div>
     </div>
 
     <div class="col-span-6 sm:col-span-4 lg:col-span-2 lg:col-start-7">
-      <p class="label text-muted mb-5">{t.footer.site}</p>
-      <ul class="space-y-1.5 text-lg">
+      <p class="label text-accent mb-5">{t.footer.site}</p>
+      <ul class="space-y-2 text-[1.05rem] text-fg/85">
         {links.map((n) => <li><a href={n.href} class="link">{n.label}</a></li>)}
       </ul>
     </div>
     <div class="col-span-6 sm:col-span-4 lg:col-span-2">
-      <p class="label text-muted mb-5">{t.footer.services}</p>
-      <ul class="space-y-1.5 text-lg">
+      <p class="label text-accent mb-5">{t.footer.services}</p>
+      <ul class="space-y-2 text-[1.05rem] text-fg/85">
         {services[lang].map((s) => <li><a href={localePath(lang, 'services', s.slug)} class="link">{s.short}</a></li>)}
       </ul>
     </div>
     <div class="col-span-12 sm:col-span-4 lg:col-span-2">
-      <p class="label text-muted mb-5">{t.footer.social}</p>
-      <ul class="space-y-1.5 text-lg">
+      <p class="label text-accent mb-5">{t.footer.social}</p>
+      <ul class="space-y-2 text-[1.05rem] text-fg/85">
         {
           socials.map((s) => (
             <li>
@@ -63,30 +79,39 @@ const links = [
     </div>
   </div>
 
-  <div class="shell mt-16 lg:mt-24 overflow-hidden">
+  <div class="shell mt-14 lg:mt-20 overflow-hidden">
     <p data-wordmark class="wordmark flex items-center justify-center gap-[0.12em] whitespace-nowrap select-none" aria-hidden="true">
-      <Star class="wordmark-star w-[0.78em] h-[0.78em] text-accent shrink-0" />
-      <span>KACHA</span>
+      <Star class="wordmark-star w-[0.72em] h-[0.72em] text-accent shrink-0" />
+      <span class="outline-text">KACHA</span>
     </p>
   </div>
 
-  <div class="shell py-6 !pr-[calc(var(--gutter)+4rem)] border-t border-line flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-3 label text-muted">
+  <div class="shell py-6 !pr-[calc(var(--gutter)+4rem)] border-t border-line flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-3 text-sm text-muted">
     <p>© {year} {site.fullName}</p>
-    <p class="hidden md:block">{site.location} — <span data-clock={site.timezone}>--:--:--</span></p>
+    <p class="hidden md:block">{site.location}</p>
     <a href={localePath(lang, 'privacy')} class="link">{t.footer.privacy}</a>
-    <a href="#top" class="inline-flex items-center gap-2 text-fg">{t.footer.top} <Arrow class="w-3 h-3 -rotate-45" /></a>
+    <a href="#top" class="inline-flex items-center gap-2 text-fg font-medium">{t.footer.top} <Arrow class="w-3 h-3 -rotate-45" /></a>
   </div>
 </footer>
 
 <style>
   .wordmark {
     font-family: var(--font-wide);
-    font-size: 12.6vw;
+    font-size: 12.4vw;
     line-height: 1;
     letter-spacing: -0.02em;
-    padding-bottom: 0.14em;
+    padding-bottom: 0.12em;
   }
-  .wordmark :global(.wordmark-star) {
-    animation: spin-slow 28s linear infinite;
+  .outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(244 247 245 / 0.32);
+    transition: -webkit-text-stroke-color 0.6s ease;
+  }
+  .wordmark:hover .outline-text {
+    -webkit-text-stroke-color: var(--color-accent);
+  }
+  .wordmark :global(.wordmark-star),
+  .cta-star {
+    animation: spin-slow 30s linear infinite;
   }
 </style>

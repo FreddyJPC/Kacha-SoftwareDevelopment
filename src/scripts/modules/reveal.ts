@@ -1,5 +1,6 @@
 /** Animaciones de entrada y ligadas al scroll. Se activan con atributos data-* en el HTML. */
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
 const EASE = 'expo.out';
@@ -11,6 +12,8 @@ const inHero = (el: Element) => !!el.closest('[data-hero], [data-intro]');
 /** Sin animaciones (reducir movimiento): solo se muestra todo */
 export function showEverything() {
   $$('[data-split],[data-reveal],[data-reveal-group] > *').forEach((el) => (el.style.visibility = 'visible'));
+  $$('[data-mark]').forEach((el) => el.classList.add('is-marked'));
+  $$('[data-progress]').forEach((el) => el.style.setProperty('--progress', '1'));
 }
 
 export function initReveals() {
@@ -64,27 +67,18 @@ export function initReveals() {
     });
   });
 
-  // Párrafo que se ilumina palabra por palabra
-  $$('[data-words]').forEach((el) => {
-    SplitText.create(el, {
-      type: 'words',
-      aria: 'none',
-      autoSplit: true,
-      onSplit(self) {
-        return gsap.fromTo(
-          self.words,
-          { opacity: 0.16 },
-          {
-            opacity: 1,
-            ease: 'none',
-            stagger: 0.08,
-            // Sin render inmediato: el texto queda legible hasta que entra en pantalla
-            immediateRender: false,
-            scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom 55%', scrub: 0.6 },
-          },
-        );
-      },
-    });
+  // Subrayado tipo marcador (.mark) que se dibuja al entrar en pantalla
+  $$('[data-mark]').forEach((el) => {
+    ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => el.classList.add('is-marked') });
+  });
+
+  // Líneas de tiempo: la línea se rellena con el scroll
+  $$('[data-progress]').forEach((el) => {
+    gsap.fromTo(
+      el,
+      { '--progress': 0 },
+      { '--progress': 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 70%', end: 'bottom 60%', scrub: 0.4 } },
+    );
   });
 
   // Contadores
@@ -114,17 +108,6 @@ export function initReveals() {
       },
     );
   });
-
-  // El hero se encoge ligeramente al salir
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  if (hero) {
-    gsap.to(hero, {
-      scale: 0.94,
-      opacity: 0.35,
-      ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
-    });
-  }
 
   // Nombre gigante del footer
   const mark = document.querySelector<HTMLElement>('[data-wordmark]');

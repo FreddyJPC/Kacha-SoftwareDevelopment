@@ -1,29 +1,31 @@
 ---
 /**
- * Cabecera de sección: etiqueta, título enorme con punto verde, contador y texto de apoyo.
- * `accent` es la parte del título que va en serif itálica (opcional).
+ * Cabecera de sección: insignia, título con una palabra destacada en verde y texto de apoyo.
+ * Por defecto va centrada; align="left" la alinea a la izquierda.
+ * `title` acepta [antes, acento, después] o un texto simple.
  */
 interface Props {
   label: string;
-  title: string;
-  accent?: string;
-  after?: string;
-  count?: number | string;
+  title: string | [string, string, string];
   id?: string;
   size?: 'lg' | 'md';
+  align?: 'center' | 'left';
 }
-const { label, title, accent, after, count, id, size = 'lg' } = Astro.props;
-const n = typeof count === 'number' ? String(count).padStart(2, '0') : count;
+const { label, title, id, size = 'lg', align = 'center' } = Astro.props;
+const [before, accent, after] = Array.isArray(title) ? title : [title, '', ''];
+const center = align === 'center';
 ---
 
-<header class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
-  <div class="col-span-12">
-    <span class="label label-star text-muted" data-reveal>{label}</span>
-  </div>
-  <h2 id={id} class:list={['col-span-12 lg:col-span-8 display', size === 'lg' ? 'display-lg' : 'display-md']} data-split>
-    {title}{accent && <span class="accent text-[1.06em]">{accent}</span>}{after}<span class="dot">.</span>{n && <sup class="ml-[0.15em] align-top text-[0.16em] font-medium tracking-normal text-muted relative top-[0.6em] font-mono">({n})</sup>}
+<header class:list={['flex flex-col gap-6', center ? 'items-center text-center' : 'items-start']}>
+  <span class="label label-star text-muted" data-reveal>{label}</span>
+  <h2 id={id} class:list={['display max-w-[18ch]', size === 'lg' ? 'display-lg' : 'display-md']} data-split>
+    {before}{accent && <span class="accent">{accent}</span>}{after}
   </h2>
-  <div class="col-span-12 sm:col-span-8 lg:col-span-4 lg:pb-3 text-muted text-lg leading-snug max-w-md lg:justify-self-end" data-reveal>
-    <slot />
-  </div>
+  {
+    Astro.slots.has('default') && (
+      <div class:list={['text-muted text-lg leading-snug max-w-xl']} data-reveal>
+        <slot />
+      </div>
+    )
+  }
 </header>

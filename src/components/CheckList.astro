@@ -1,0 +1,31 @@
+---
+/** Lista con título e íconos de verificación (resultados, aprendizajes, "ideal para"). */
+import Star from './Star.astro';
+
+interface Props {
+  title: string;
+  items: string[];
+  icon?: 'check' | 'star';
+}
+const { title, items, icon = 'check' } = Astro.props;
+---
+
+<div class="rounded-[calc(var(--radius-panel)*0.8)] bg-surface p-7 lg:p-9 h-full" data-reveal>
+  <h2 class="label label-star text-muted mb-7 !bg-bg">{title}</h2>
+  <ul class="flex flex-col gap-4">
+    {
+      items.map((item) => (
+        <li class="flex gap-3.5 text-lg leading-snug">
+          <span class="shrink-0 grid place-items-center w-7 h-7 rounded-full bg-accent text-black mt-0.5" aria-hidden="true">
+            {icon === 'check' ? (
+              <svg viewBox="0 0 16 16" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7" /></svg>
+            ) : (
+              <Star class="w-3.5 h-3.5" />
+            )}
+          </span>
+          <span class="font-medium">{item}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>

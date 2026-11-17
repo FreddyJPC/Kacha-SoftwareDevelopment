@@ -6,7 +6,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
-import { destroyClock, initClock } from './modules/clock';
 import { initFilter } from './modules/filter';
 import { initForms } from './modules/form';
 import { closeMenu, initNav } from './modules/nav';
@@ -26,7 +25,6 @@ function init() {
   const { signal } = abort;
 
   initScroll(signal, reduced, closeMenu);
-  initClock();
   initForms(signal);
   initFilter(signal);
 
@@ -66,7 +64,6 @@ function init() {
 function destroy() {
   abort?.abort();
   abort = null;
-  destroyClock();
   ctx?.revert();
   ctx = null;
   ScrollTrigger.getAll().forEach((t) => t.kill());

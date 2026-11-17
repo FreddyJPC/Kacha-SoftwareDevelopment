@@ -1,5 +1,5 @@
 ---
-/** Resumen: cifras, problema y solución. */
+/** Resumen: cifras en tarjetas, y problema / solución en dos tarjetas enfrentadas. */
 import type { CollectionEntry } from 'astro:content';
 import { getLang } from '../../i18n/config';
 import { useTranslations } from '../../i18n/ui';
@@ -7,19 +7,15 @@ import { useTranslations } from '../../i18n/ui';
 interface Props { project: CollectionEntry<'projects'> }
 const { metrics, problem, solution } = Astro.props.project.data;
 const t = useTranslations(getLang(Astro)).project;
-const blocks = [
-  { title: t.problem, text: problem },
-  { title: t.solution, text: solution },
-].filter((b) => b.text);
 ---
 
 {
   metrics.length > 0 && (
-    <dl class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 pb-16 lg:pb-24 mb-16 lg:mb-24 border-b border-line" data-reveal-group>
+    <dl class:list={['grid grid-cols-2 gap-2 mb-16 lg:mb-24', metrics.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3']} data-reveal-group>
       {metrics.map((m) => (
-        <div class="flex flex-col-reverse justify-end gap-3">
+        <div class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-6 lg:p-7 flex flex-col-reverse justify-end gap-5 min-h-40">
           <dt class="text-muted leading-snug max-w-[15rem]">{m.label}</dt>
-          <dd class="display text-[clamp(2.5rem,6vw,5.5rem)] leading-none whitespace-nowrap">{m.value}</dd>
+          <dd class="display text-[clamp(2.4rem,4.6vw,4.25rem)] leading-none whitespace-nowrap text-accent-ink">{m.value}</dd>
         </div>
       ))}
     </dl>
@@ -27,14 +23,20 @@ const blocks = [
 }
 
 {
-  blocks.length > 0 && (
-    <div class="grid grid-cols-12 gap-x-6 gap-y-14">
-      {blocks.map((b) => (
-        <div class="col-span-12 lg:col-span-6 lg:pr-10">
-          <h2 class="label label-star text-muted mb-6" data-reveal>{b.title}</h2>
-          <p class="text-[clamp(1.35rem,2.2vw,2rem)] font-medium tracking-[-0.03em] leading-[1.2]" data-reveal>{b.text}</p>
+  (problem || solution) && (
+    <div class="grid lg:grid-cols-2 gap-2">
+      {problem && (
+        <div class="rounded-[calc(var(--radius-panel)*0.8)] bg-surface p-7 lg:p-10" data-reveal>
+          <h2 class="label label-star text-muted mb-7 !bg-bg">{t.problem}</h2>
+          <p class="text-[clamp(1.25rem,1.9vw,1.75rem)] font-medium tracking-[-0.02em] leading-[1.3]">{problem}</p>
         </div>
-      ))}
+      )}
+      {solution && (
+        <div class="theme-accent bg-bg text-fg rounded-[calc(var(--radius-panel)*0.8)] p-7 lg:p-10" data-reveal>
+          <h2 class="label label-star mb-7">{t.solution}</h2>
+          <p class="text-[clamp(1.25rem,1.9vw,1.75rem)] font-medium tracking-[-0.02em] leading-[1.3]">{solution}</p>
+        </div>
+      )}
     </div>
   )
 }

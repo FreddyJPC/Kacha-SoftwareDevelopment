@@ -4,6 +4,8 @@ import { Image } from 'astro:assets';
 import Site from '../layouts/Site.astro';
 import PageIntro from '../components/PageIntro.astro';
 import Arrow from '../components/Arrow.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Stats from '../components/Stats.astro';
 import TechMarquee from '../components/TechMarquee.astro';
 import Process from '../components/Process.astro';
 import Contact from '../components/Contact.astro';
@@ -19,25 +21,24 @@ import { twoDigits } from '../lib/projects';
 const lang = getLang(Astro);
 const t = useTranslations(lang);
 const p = t.aboutPage;
-const { disciplines, founder, stats, story, values } = about[lang];
+const { disciplines, founder, story, values } = about[lang];
 const [h1Before, h1Accent, h1After] = p.heading;
-const [teamBefore, teamAccent, teamAfter] = p.teamTitle;
-const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
 ---
 
 <Site title={p.title} description={p.description}>
-  <PageIntro label={p.label} title={h1Before} accent={h1Accent} after={h1After} size="lg">
+  <PageIntro label={p.label} title={h1Before} accent={h1Accent} after={h1After} size="lg" center>
     {p.intro}
   </PageIntro>
 
   <!-- Historia -->
-  <section class="panel theme-light shell py-20 lg:py-32">
+  <section class="panel theme-light shell py-20 lg:py-28">
     <div class="grid grid-cols-12 gap-x-6 gap-y-12 items-center">
       <figure class="col-span-12 sm:col-span-8 lg:col-span-5">
-        <div class="k-card relative overflow-hidden rounded-[calc(var(--radius-panel)*0.7)] aspect-square grid place-items-center">
-          <Image src={brandK} alt={p.brandAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 40vw, 90vw" class="w-[78%] h-auto" data-parallax="4" />
+        <div class="k-card relative overflow-hidden rounded-[calc(var(--radius-panel)*0.8)] aspect-square grid place-items-center">
+          <div class="dots-dark dots absolute inset-0"></div>
+          <Image src={brandK} alt={p.brandAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 40vw, 90vw" class="relative w-[78%] h-auto" data-parallax="4" />
         </div>
-        <figcaption class="mt-3 flex justify-between w-full label text-muted">
+        <figcaption class="mt-3 flex justify-between w-full text-sm text-muted">
           <span>{site.fullName}</span>
           <span>{site.location}</span>
         </figcaption>
@@ -45,61 +46,48 @@ const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
       <div class="col-span-12 lg:col-span-6 lg:col-start-7">
         <h2 class="label label-star text-muted mb-8" data-reveal>{p.story}</h2>
         <div class="text-lg lg:text-xl leading-relaxed text-muted space-y-5" data-reveal-group>
-          {story.map((p) => <p>{p}</p>)}
+          {story.map((paragraph) => <p>{paragraph}</p>)}
         </div>
       </div>
     </div>
 
-    <dl class="mt-20 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 border-t border-line pt-10" data-reveal-group>
-      {
-        stats.map((s) => (
-          <div class="flex flex-col-reverse justify-end gap-4">
-            <dt class="text-muted leading-snug max-w-[14rem]">{s.label}</dt>
-            <dd class="display text-[clamp(3.25rem,8vw,7.5rem)] leading-none tabular-nums">
-              <span data-count={s.value}>{s.value}</span>{s.suffix && <span class="text-accent-ink">{s.suffix}</span>}
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
+    <div class="mt-16 lg:mt-24">
+      <Stats />
+    </div>
   </section>
 
   <!-- Valores -->
-  <section class="theme-dark bg-bg text-fg shell py-24 lg:py-36" aria-labelledby="values-title">
-    <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
-      <div class="col-span-12"><span class="label label-star text-muted" data-reveal>{p.valuesLabel}</span></div>
-      <h2 id="values-title" class="col-span-12 lg:col-span-9 display display-lg" data-split>{p.valuesTitle}<span class="dot">.</span></h2>
-    </div>
-    <ol class="mt-14 lg:mt-24 border-t border-line">
+  <section class="theme-dark bg-bg text-fg shell py-24 lg:py-32" aria-labelledby="values-title">
+    <SectionHead label={p.valuesLabel} title={p.valuesTitle} id="values-title" />
+    <div class="mt-14 lg:mt-20 grid md:grid-cols-2 gap-2" data-reveal-group>
       {
         values.map((v, i) => (
-          <li class="grid grid-cols-12 gap-x-6 gap-y-3 py-8 lg:py-11 border-b border-line" data-reveal>
-            <span class="col-span-12 lg:col-span-3 label text-muted pt-2">({twoDigits(i + 1)})</span>
-            <h3 class="col-span-12 lg:col-span-4 text-[clamp(1.5rem,2.6vw,2.4rem)] font-medium tracking-[-0.035em] leading-[1.05]">{v.title}</h3>
-            <p class="col-span-12 lg:col-span-5 text-lg text-muted leading-relaxed">{v.text}</p>
-          </li>
+          <article class="value rounded-[calc(var(--radius-panel)*0.8)] bg-surface p-7 lg:p-9 flex flex-col gap-10 min-h-60">
+            <span class="num">{twoDigits(i + 1)}</span>
+            <div class="mt-auto">
+              <h3 class="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold tracking-[-0.03em] leading-[1.1]">{v.title}</h3>
+              <p class="mt-3 text-lg text-muted leading-relaxed">{v.text}</p>
+            </div>
+          </article>
         ))
       }
-    </ol>
+    </div>
   </section>
 
   <TechMarquee />
 
   <!-- Equipo + stack -->
-  <section class="panel theme-light shell py-20 lg:py-32 mt-[var(--inset)] space-y-24 lg:space-y-36">
+  <section class="panel theme-light shell py-20 lg:py-28 space-y-24 lg:space-y-32">
     <div>
-      <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
-        <div class="col-span-12 lg:col-span-3"><span class="label label-star text-muted" data-reveal>{p.teamLabel}</span></div>
-        <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>{teamBefore}<span class="accent">{teamAccent}</span>{teamAfter}<span class="dot">.</span></h2>
-      </div>
+      <SectionHead label={p.teamLabel} title={p.teamTitle} size="md" />
 
       <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-2">
-        <article class="founder col-span-12 lg:col-span-5 theme-dark bg-bg text-fg rounded-[calc(var(--radius-panel)*0.7)] overflow-hidden flex flex-col" data-reveal>
+        <article class="founder col-span-12 lg:col-span-5 theme-dark bg-bg text-fg rounded-[calc(var(--radius-panel)*0.8)] overflow-hidden flex flex-col" data-reveal>
           <div class="portrait relative aspect-[4/3] overflow-hidden">
             <Image src={portrait} alt={`${p.portraitAlt} ${founder.name}`} widths={[480, 800, 1200]} quality={70} sizes="(min-width: 1024px) 40vw, 100vw" class="w-full h-full object-cover object-[58%_30%]" />
+            <span class="absolute left-4 top-4 tag !border-transparent bg-accent text-black font-bold">{founder.role}</span>
           </div>
           <div class="p-7 lg:p-9 flex flex-col gap-4">
-            <p class="label text-accent">{founder.role}</p>
             <h3 class="text-3xl font-bold tracking-[-0.04em] leading-none">{founder.name}</h3>
             <p class="text-muted leading-relaxed">{founder.bio}</p>
             <a href={founder.link} target="_blank" rel="noopener noreferrer" class="group mt-2 inline-flex items-center gap-2 font-medium w-fit">
@@ -112,7 +100,7 @@ const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
           {
             disciplines.map((d, i) => (
               <article class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-6 lg:p-7 flex flex-col justify-between gap-8 min-h-36">
-                <span class="label text-faint">{twoDigits(i + 1)}</span>
+                <span class="num !bg-bg">{twoDigits(i + 1)}</span>
                 <div>
                   <h3 class="text-xl font-bold tracking-[-0.03em]">{d.title}</h3>
                   <p class="mt-1.5 text-muted leading-snug">{d.text}</p>
@@ -125,20 +113,17 @@ const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
     </div>
 
     <div>
-      <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
-        <div class="col-span-12 lg:col-span-3"><span class="label label-star text-muted" data-reveal>{p.stackLabel}</span></div>
-        <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>{stackBefore}<span class="accent">{stackAccent}</span>{stackAfter}<span class="dot">.</span></h2>
-      </div>
-      <div class="mt-12 lg:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-line" data-reveal-group>
+      <SectionHead label={p.stackLabel} title={p.stackTitle} size="md" />
+      <div class="mt-12 lg:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-2" data-reveal-group>
         {
-          stack[lang].map((g, i) => (
-            <div class="cell relative border-r border-b border-line p-6 lg:p-8 min-h-52 flex flex-col">
-              <div class="flex items-baseline justify-between gap-4">
-                <h3 class="text-xl lg:text-2xl font-bold tracking-tight">{g.group}</h3>
-                <span class="label text-faint">{twoDigits(i + 1)}</span>
-              </div>
-              <ul class="mt-8 flex flex-wrap gap-1.5">
-                {g.items.map((item) => <li class="tag">{item}</li>)}
+          stack[lang].map((g) => (
+            <div class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-6 lg:p-7 min-h-48 flex flex-col">
+              <h3 class="flex items-center gap-2.5 text-xl font-bold tracking-tight">
+                <span class="w-2 h-2 rounded-full bg-accent"></span>
+                {g.group}
+              </h3>
+              <ul class="mt-7 flex flex-wrap gap-1.5">
+                {g.items.map((item) => <li class="tag bg-bg !border-transparent">{item}</li>)}
               </ul>
             </div>
           ))
@@ -157,6 +142,9 @@ const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
       radial-gradient(70% 70% at 80% 100%, rgb(0 229 153 / 0.35), transparent 70%),
       radial-gradient(60% 60% at 0% 0%, rgb(0 100 255 / 0.12), transparent 70%), #e3ebe7;
   }
+  .value {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
   .portrait :global(img) {
     filter: grayscale(1) contrast(1.05);
     transition:
@@ -167,18 +155,6 @@ const [stackBefore, stackAccent, stackAfter] = p.stackTitle;
     .founder:hover .portrait :global(img) {
       filter: grayscale(0);
       transform: scale(1.04);
-    }
-  }
-  .cell {
-    transition:
-      background-color 0.5s var(--ease-out-expo),
-      color 0.5s var(--ease-out-expo);
-  }
-  @media (hover: hover) {
-    .cell:hover {
-      background: #000;
-      color: var(--color-paper);
-      --line: rgb(244 247 245 / 0.2);
     }
   }
 </style>
