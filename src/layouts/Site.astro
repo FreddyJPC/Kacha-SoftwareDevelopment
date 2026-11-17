@@ -1,0 +1,31 @@
+---
+/** Página del sitio: documento base + preloader, navegación, footer y botón flotante de WhatsApp. */
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Preloader from '../components/Preloader.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+const t = useTranslations(getLang(Astro));
+---
+
+<Base {...Astro.props}>
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-paper focus:text-black focus:px-4 focus:py-2 focus:rounded-full">
+    {t.nav.skip}
+  </a>
+  <Preloader />
+  <Nav />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <WhatsAppFab />
+</Base>

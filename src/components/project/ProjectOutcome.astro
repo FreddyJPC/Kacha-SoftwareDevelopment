@@ -1,0 +1,71 @@
+---
+/** Cierre: resultados y aprendizajes, cita del cliente, servicios relacionados y enlace al proyecto en vivo. */
+import type { CollectionEntry } from 'astro:content';
+import Button from '../Button.astro';
+import { getService } from '../../data/services';
+import { getLang, localePath } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { twoDigits } from '../../lib/projects';
+
+interface Props { project: CollectionEntry<'projects'> }
+const { highlights, learnings, url, testimonial, services } = Astro.props.project.data;
+const lang = getLang(Astro);
+const t = useTranslations(lang).project;
+const blocks = [
+  { title: t.results, items: highlights },
+  { title: t.learnings, items: learnings },
+].filter((b) => b.items.length > 0);
+const related = services.map((id) => getService(lang, id)).filter((s) => s !== undefined);
+---
+
+{
+  blocks.length > 0 && (
+    <div class="grid grid-cols-12 gap-x-6 gap-y-14">
+      {blocks.map((b) => (
+        <div class="col-span-12 lg:col-span-6 lg:pr-10" data-reveal>
+          <h2 class="label label-star text-muted mb-6">{b.title}</h2>
+          <ul class="border-t border-line">
+            {b.items.map((item, i) => (
+              <li class="flex gap-5 py-5 border-b border-line text-lg leading-snug">
+                <span class="label text-faint pt-2">{twoDigits(i + 1)}</span>
+                <span class="font-medium">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+{
+  testimonial && (
+    <blockquote class="theme-accent bg-bg text-fg rounded-[calc(var(--radius-panel)*0.8)] p-8 lg:p-14" data-reveal>
+      <p class="lead">“{testimonial.quote}”</p>
+      <footer class="mt-8 flex flex-wrap items-baseline gap-x-2">
+        <span class="font-medium">{testimonial.author}</span>
+        <span class="text-muted">— {testimonial.role}</span>
+      </footer>
+    </blockquote>
+  )
+}
+
+{
+  (related.length > 0 || url) && (
+    <div class="flex flex-wrap items-center justify-between gap-x-10 gap-y-6 border-t border-line pt-10" data-reveal>
+      {related.length > 0 && (
+        <div>
+          <p class="label text-muted mb-4">{t.services}</p>
+          <ul class="flex flex-wrap gap-2">
+            {related.map((s) => (
+              <li>
+                <a href={localePath(lang, 'services', s.slug)} class="tag !text-base !py-2.5 !px-4 font-medium hover:bg-fg hover:text-bg transition-colors duration-300">{s.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {url && <Button href={url} external>{t.live}</Button>}
+    </div>
+  )
+}

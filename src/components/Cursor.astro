@@ -1,0 +1,61 @@
+---
+/**
+ * Elementos que siguen al puntero:
+ *  - cursor circular con etiqueta, sobre los elementos con data-cursor="texto"
+ *  - foco de luz verde, la firma del sitio original de Kacha
+ */
+---
+
+<div data-spotlight class="spotlight" aria-hidden="true"></div>
+<div data-cursor-el class="cursor fixed top-0 left-0 z-[80] pointer-events-none" aria-hidden="true">
+  <div class="cursor-inner"><span data-cursor-label></span></div>
+</div>
+
+<style is:global>
+  .cursor-inner {
+    display: grid;
+    place-items: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: -2.75rem 0 0 -2.75rem;
+    border-radius: 999px;
+    background: var(--color-accent);
+    color: #000;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transform: scale(0);
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .cursor.is-active .cursor-inner {
+    transform: scale(1);
+  }
+  .spotlight {
+    position: fixed;
+    top: -280px;
+    left: -280px;
+    z-index: 30;
+    width: 560px;
+    height: 560px;
+    border-radius: 999px;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background: radial-gradient(closest-side, rgb(0 229 153 / 0.2), rgb(0 229 153 / 0.07) 45%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    will-change: transform;
+  }
+  .spotlight.is-on {
+    opacity: 1;
+  }
+  @media not ((hover: hover) and (pointer: fine)) {
+    .cursor,
+    .spotlight {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+/**
+ * Bloque de contacto con formulario. Cierra casi todas las páginas.
+ * heading="h1" cuando es el contenido principal (página de contacto).
+ */
+import { site } from '../data/site';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Arrow from './Arrow.astro';
+import ContactForm from './ContactForm.astro';
+
+interface Props {
+  heading?: 'h1' | 'h2';
+  id?: string;
+}
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const { heading: H = 'h2', id = t.ids.contact } = Astro.props;
+const main = H === 'h1';
+const [before, accent, after] = t.contact.lead;
+---
+
+<section id={id} class:list={['theme-dark p-[var(--inset)]', main && 'pt-[calc(var(--inset)*2+3.5rem)]']} aria-labelledby={`${id}-title`}>
+  <div class="grain relative overflow-hidden rounded-[var(--radius-panel)] bg-surface text-fg" data-intro={main ? '' : undefined}>
+    <div class="absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden="true">
+      <div class="glow glow-a !bottom-auto !-top-[50vmax] !-right-[30vmax]"></div>
+      <div class="glow glow-b"></div>
+    </div>
+
+    <div class="relative z-10 shell py-[var(--gutter)] lg:py-16 grid grid-cols-12 gap-x-6 gap-y-14">
+      <!-- Formulario -->
+      <div class="order-2 lg:order-1 col-span-12 lg:col-span-6 xl:col-span-5" data-reveal>
+        <ContactForm />
+      </div>
+
+      <!-- Texto -->
+      <div class="order-1 lg:order-2 col-span-12 lg:col-span-6 xl:col-start-7 flex flex-col justify-between gap-14 pt-6 lg:pt-4">
+        <div>
+          <H id={`${id}-title`} class="display display-lg" data-split>{t.contact.title}<span class="dot">.</span></H>
+          <p class="mt-8 text-2xl lg:text-[2rem] font-medium tracking-[-0.03em] leading-[1.15] max-w-xl" data-reveal>
+            {before}<span class="accent text-[1.08em]">{accent}</span>{after}
+          </p>
+          <ol class="mt-10 flex flex-col gap-3 max-w-md" data-reveal-group>
+            {
+              t.contact.next.map((step, i) => (
+                <li class="flex items-baseline gap-4 text-fg/85">
+                  <span class="label text-accent">0{i + 1}</span>
+                  <span class="leading-snug">{step}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div class="border-t border-white/20 pt-8 grid sm:grid-cols-2 gap-8" data-reveal-group>
+          <a href={site.whatsapp} target="_blank" rel="noopener noreferrer" class="group block">
+            <p class="label text-fg/70 mb-3">WhatsApp</p>
+            <p class="text-lg font-medium flex items-start gap-2">
+              <span class="link">{site.phone}</span>
+              <Arrow class="w-4 h-4 mt-1.5 shrink-0 transition-transform duration-500 group-hover:rotate-45" />
+            </p>
+          </a>
+          <a href={`mailto:${site.email}`} class="group block">
+            <p class="label text-fg/70 mb-3">Email</p>
+            <p class="text-lg font-medium break-all flex items-start gap-2">
+              <span class="link">{site.email}</span>
+              <Arrow class="w-4 h-4 mt-1.5 shrink-0 transition-transform duration-500 group-hover:rotate-45" />
+            </p>
+          </a>
+          <div>
+            <p class="label text-fg/70 mb-3">{t.contact.quick}</p>
+            <p class="text-fg/80 leading-snug">{t.common.responseTime}, {t.contact.days}.</p>
+          </div>
+          <div>
+            <p class="label text-fg/70 mb-3">{t.contact.location}</p>
+            <p class="text-fg/80 leading-snug">{site.location} · <span data-clock={site.timezone}>--:--:--</span><br />{t.common.coverage}.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

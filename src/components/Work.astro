@@ -1,262 +1,33 @@
 ---
-const steps = [
-  {
-    id: "01",
-    title: "Contacto",
-    description: "No existe un mínimo en cuanto al tamaño del proyecto. Nos adaptamos a tu necesidad.",
-    bgColor: "rgb(220, 255, 214)",
-    rotate: "-2deg",
-  },
-  {
-    id: "02",
-    title: "Presupuesto",
-    description: "Analizamos el proyecto a fondo y te entregamos una cotización clara para llevar adelante tu idea.",
-    bgColor: "rgb(255, 239, 200)",
-    rotate: "3deg",
-  },
-  {
-    id: "03",
-    title: "Inicio",
-    description: "Una vez aceptada la propuesta, iniciamos el desarrollo con metodologías ágiles.",
-    bgColor: "rgb(206, 255, 241)",
-    rotate: "-3deg",
-  },
-  {
-    id: "04",
-    title: "Feedback",
-    description: "A medida que vamos avanzando, tendrás acceso al proyecto en tiempo real para revisar y brindar feedback.",
-    bgColor: "rgb(255, 240, 249)",
-    rotate: "2deg",
-  },
-  {
-    id: "05",
-    title: "Entrega",
-    description: "Te entregamos el proyecto final con soporte y garantías de que supere tus expectativas.",
-    bgColor: "rgb(255, 232, 214)",
-    rotate: "-2deg",
-  },
-];
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import { getProjects } from '../lib/projects';
+import SectionHead from './SectionHead.astro';
+import ProjectCard from './ProjectCard.astro';
+import Button from './Button.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const all = await getProjects(lang);
+const featured = all.filter((p) => p.data.featured);
 ---
 
-<section class="work-section" id="work">
-  <h2 class="section-title reveal-text">Nuestra forma de trabajar</h2>
+<section id={t.ids.projects} class="shell pt-24 lg:pt-36 pb-20 lg:pb-28" aria-labelledby="work-title">
+  <SectionHead label={t.work.label} title={t.work.title} count={all.length} id="work-title">
+    {t.work.intro}
+  </SectionHead>
 
-  <div class="workflow-container">
-    <img src="/img/lineOne.svg" alt="linea 3" class="line line-three reveal-line" />
-    <img src="/img/lineOne.svg" alt="linea 1" class="line line-one reveal-line" />
-    <img src="/img/lineTwo.svg" alt="linea 2" class="line line-two reveal-line" />
-    <img src="/img/lineTwo.svg" alt="linea 0" class="line line-cero reveal-line" />
-
-    {steps.map((step, index) => (
-      <div
-        class="note-container reveal-card"
-        style={`
-          top: ${index * 160}px; 
-          left: ${index % 2 === 0 ? '25%' : '55%'};
-          --rotate-val: ${step.rotate};
-        `}
-      >
-        <div class="note-outer floating-animation" style={`animation-delay: ${index * 0.5}s`}>
-          <div class="note-inner" style={`background-color:${step.bgColor}`}>
-            <div class="note-header">
-              <span class="note-id">{step.id}</span>
-              <h3 class="note-title">{step.title}</h3>
-            </div>
-            <p class="note-desc">{step.description}</p>
-          </div>
+  <div class="mt-14 lg:mt-24 grid md:grid-cols-2 gap-x-6 gap-y-14 lg:gap-y-24">
+    {
+      featured.map((project, i) => (
+        <div class={i % 2 === 1 ? 'md:mt-24 lg:mt-36' : ''} data-reveal>
+          <ProjectCard project={project} index={i} />
         </div>
-        <div class="pin"></div>
-      </div>
-    ))}
+      ))
+    }
+  </div>
+
+  <div class="mt-16 lg:mt-24 flex justify-center" data-reveal>
+    <Button href={localePath(lang, 'projects')} variant="solid">{t.work.all(all.length)}</Button>
   </div>
 </section>
-
-<style>
-  :root {
-    --font-primary: 'Satoshi', sans-serif;
-  }
-
-  .work-section {
-    background-color: #000000;
-    color: #fff; /* Cambiado a blanco para que el título por defecto se vea bien */
-    padding: 6rem 2rem 8rem; /* Un poco más de espacio abajo para asegurar detección */
-    position: relative;
-    min-height: 800px;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .section-title {
-    font-family: var(--font-primary, sans-serif);
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
-    color: #fff;
-    margin-bottom: 5rem;
-    
-    /* Animación de texto */
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  
-  .section-title.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .workflow-container {
-    position: relative;
-    width: 100%;
-    /* Ajuste dinámico de altura para que cubra todas las notas */
-    height: 1100px; 
-    margin: 0 auto;
-    max-width: 1500px;
-  }
-
-  /* --- LÍNEAS --- */
-  .line {
-    position: absolute;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 1s ease, transform 1s ease;
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-  
-  .line-three { top: 650px; left: 40%; width: 250px; transform-origin: right; }
-  .line-one { top: 300px; left: 40%; width: 250px; transform-origin: left; }
-  .line-two { top: 450px; left: 40%; width: 250px; transform-origin: right; }
-  .line-cero { top: 125px; left: 40%; width: 250px; transform-origin: right; }
-
-  /* --- TARJETAS --- */
-  .note-container {
-    position: absolute;
-    z-index: 2;
-    width: 270px;
-    opacity: 0;
-    transform: rotate(var(--rotate-val)) translateY(50px) scale(0.9);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  .note-container.visible {
-    opacity: 1;
-    transform: rotate(var(--rotate-val)) translateY(0) scale(1);
-  }
-
-  .line.visible {
-    opacity: 0.7;
-    transform: scaleX(1);
-  }
-
-  /* Animación Flotante */
-  @keyframes floatCard {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-
-  .note-outer {
-    background-color: #0C0D0D;
-    border-radius: 24px;
-    box-shadow: #fff 0px 0px 0px 2px, rgba(255, 255, 255, 0.15) 0px 11px 30px 0px;
-    padding: 1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: floatCard 6s ease-in-out infinite;
-  }
-
-  .note-inner {
-    background-color: rgb(220, 255, 214);
-    border-radius: 16px;
-    padding: 1rem;
-    min-height: 140px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  .note-header { display: flex; flex-direction: column; margin-bottom: 0.5rem; }
-  
-  .note-id { 
-    display: block; 
-    font-size: 2rem; 
-    font-family: "Just Me Again Down Here", cursive; 
-    margin-bottom: 0.25rem; 
-    text-align: left;
-    color: #000;
-  }
-  
-  .note-title { 
-    font-size: 1.1rem; 
-    font-family: var(--font-primary, sans-serif); 
-    margin: 0; 
-    font-weight: 700;
-    color: #000;
-  }
-  
-  .note-desc { 
-    font-size: 0.9rem; 
-    font-family: var(--font-primary, sans-serif); 
-    line-height: 1.4; 
-    text-align: left; 
-    color: #333; 
-  }
-
-  .pin {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background-color: #00E599;
-    border-radius: 50%;
-    box-shadow: 0 0 0 3px #fff;
-    z-index: 3;
-  }
-
-  .note-container:hover { z-index: 10; }
-  
-  .note-container:hover .note-outer {
-    animation-play-state: paused;
-    transform: scale(1.05) translateY(-5px);
-    box-shadow: #00E599 0px 0px 0px 3px, rgba(0, 229, 153, 0.4) 0px 20px 40px 0px;
-  }
-
-  /* --- RESPONSIVE --- */
-  @media (max-width: 768px) {
-    .work-section { padding-bottom: 4rem; }
-    .workflow-container { height: auto; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem; }
-    .line { display: none; }
-    
-    .note-container {
-      position: relative;
-      top: auto !important;
-      left: auto !important;
-      margin: 0 auto;
-      width: 90%;
-      max-width: 350px;
-      transform: translateY(50px); 
-      --rotate-val: 0deg !important;
-    }
-    
-    .note-container.visible { transform: translateY(0); }
-  }
-</style>
-
-<script type="module" is:client>
-  const observerOptions = {
-    threshold: 0.2,
-    rootMargin: "0px 0px -50px 0px"
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  const elementsToAnimate = document.querySelectorAll('.reveal-card, .reveal-line, .reveal-text');
-  elementsToAnimate.forEach((el) => observer.observe(el));
-</script>

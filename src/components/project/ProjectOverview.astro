@@ -1,0 +1,40 @@
+---
+/** Resumen: cifras, problema y solución. */
+import type { CollectionEntry } from 'astro:content';
+import { getLang } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props { project: CollectionEntry<'projects'> }
+const { metrics, problem, solution } = Astro.props.project.data;
+const t = useTranslations(getLang(Astro)).project;
+const blocks = [
+  { title: t.problem, text: problem },
+  { title: t.solution, text: solution },
+].filter((b) => b.text);
+---
+
+{
+  metrics.length > 0 && (
+    <dl class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 pb-16 lg:pb-24 mb-16 lg:mb-24 border-b border-line" data-reveal-group>
+      {metrics.map((m) => (
+        <div class="flex flex-col-reverse justify-end gap-3">
+          <dt class="text-muted leading-snug max-w-[15rem]">{m.label}</dt>
+          <dd class="display text-[clamp(2.5rem,6vw,5.5rem)] leading-none whitespace-nowrap">{m.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+{
+  blocks.length > 0 && (
+    <div class="grid grid-cols-12 gap-x-6 gap-y-14">
+      {blocks.map((b) => (
+        <div class="col-span-12 lg:col-span-6 lg:pr-10">
+          <h2 class="label label-star text-muted mb-6" data-reveal>{b.title}</h2>
+          <p class="text-[clamp(1.35rem,2.2vw,2rem)] font-medium tracking-[-0.03em] leading-[1.2]" data-reveal>{b.text}</p>
+        </div>
+      ))}
+    </div>
+  )
+}

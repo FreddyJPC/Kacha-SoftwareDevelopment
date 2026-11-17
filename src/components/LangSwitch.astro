@@ -1,0 +1,35 @@
+---
+/** Selector de idioma ES / EN: enlaza a la misma página en el otro idioma. */
+import { switchLangPath } from '../i18n/alternates';
+import { getLang, localeMeta, locales } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+---
+
+<div class:list={['lang-switch inline-flex items-center rounded-full p-1 text-[0.8rem] font-medium', cls]} role="group" aria-label={t.nav.language}>
+  {
+    locales.map((code) => (
+      <a
+        href={switchLangPath(Astro.url.pathname, code)}
+        hreflang={localeMeta[code].html}
+        lang={localeMeta[code].html}
+        aria-current={code === lang ? 'true' : undefined}
+        data-astro-prefetch="hover"
+        class:list={['px-2.5 py-1.5 rounded-full leading-none transition-colors duration-300', code === lang ? 'bg-fg text-bg' : 'text-muted hover:text-fg']}
+      >
+        <span aria-hidden="true">{localeMeta[code].short}</span>
+        <span class="sr-only">{localeMeta[code].name}</span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .lang-switch {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+</style>

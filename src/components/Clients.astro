@@ -1,0 +1,55 @@
+---
+/** Cinta de logos "Confían en nosotros". Los logos se editan en src/data/clients.ts */
+import { Image } from 'astro:assets';
+import { clients } from '../data/clients';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+const t = useTranslations(getLang(Astro)).clients;
+
+const row = [...clients, ...clients];
+---
+
+<section class="theme-dark bg-bg text-fg pt-10 pb-12 lg:pt-14 lg:pb-16" aria-label={t.aria}>
+  <p class="shell label text-muted justify-center w-full text-center mb-9">{t.caption}</p>
+  <div class="logos overflow-hidden">
+    <div class="track flex w-max">
+      {
+        [0, 1].map((n) => (
+          <ul class="flex shrink-0 items-center" aria-hidden={n === 1 ? 'true' : undefined}>
+            {row.map((c) => (
+              <li class="px-[clamp(1.5rem,3.6vw,3.5rem)]">
+                <Image src={c.logo} alt={n === 0 ? c.name : ''} height={96} class="logo h-[clamp(1.9rem,3.6vw,3rem)] w-auto object-contain" loading="lazy" />
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .logos {
+    mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  }
+  .track {
+    animation: marquee 50s linear infinite;
+  }
+  .logos:hover .track {
+    animation-play-state: paused;
+  }
+  .logo {
+    filter: grayscale(1) brightness(2.4) contrast(0.75);
+    opacity: 0.75;
+    transition:
+      filter 0.4s ease,
+      opacity 0.4s ease;
+  }
+  @media (hover: hover) {
+    .logo:hover {
+      filter: none;
+      opacity: 1;
+    }
+  }
+</style>

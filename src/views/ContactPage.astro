@@ -1,0 +1,17 @@
+---
+/** Contacto: /contacto/ y /en/contact/ (acepta ?service=<id> y ?plan=<nombre> para preseleccionar el formulario). */
+import Site from '../layouts/Site.astro';
+import Contact from '../components/Contact.astro';
+import Faq from '../components/Faq.astro';
+import { faq } from '../data/faq';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang).contactPage;
+---
+
+<Site title={t.title} description={t.description}>
+  <Contact heading="h1" />
+  <Faq items={faq[lang].slice(1, 6)} title={t.faqTitle} intro={t.faqIntro} />
+</Site>

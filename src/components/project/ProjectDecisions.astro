@@ -1,0 +1,43 @@
+---
+/** Decisiones técnicas en tarjetas + stack del proyecto. */
+import type { CollectionEntry } from 'astro:content';
+import { getLang } from '../../i18n/config';
+import { useTranslations } from '../../i18n/ui';
+import { twoDigits } from '../../lib/projects';
+
+interface Props { project: CollectionEntry<'projects'> }
+const { decisions, stack } = Astro.props.project.data;
+const t = useTranslations(getLang(Astro)).project;
+const [before, accent, after] = t.decisionsTitle;
+---
+
+{
+  decisions.length > 0 && (
+    <div>
+      <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-end">
+        <div class="col-span-12 lg:col-span-3">
+          <span class="label label-star text-muted" data-reveal>{t.decisionsLabel}</span>
+        </div>
+        <h2 class="col-span-12 lg:col-span-9 display display-md" data-split>
+          {before}<span class="accent">{accent}</span>{after}<span class="dot">.</span>
+        </h2>
+      </div>
+
+      <div class="mt-12 lg:mt-16 grid md:grid-cols-2 gap-2" data-reveal-group>
+        {decisions.map((item, i) => (
+          <article class="rounded-[calc(var(--radius-panel)*0.7)] bg-surface p-7 lg:p-9 flex flex-col gap-10 min-h-60">
+            <span class="label text-faint">{twoDigits(i + 1)}</span>
+            <div class="mt-auto">
+              <h3 class="text-2xl font-bold tracking-[-0.035em] leading-[1.1]">{item.title}</h3>
+              <p class="mt-3 text-muted leading-relaxed">{item.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <ul class="mt-8 flex flex-wrap gap-1.5" data-reveal>
+        {stack.map((t) => <li class="tag">{t}</li>)}
+      </ul>
+    </div>
+  )
+}

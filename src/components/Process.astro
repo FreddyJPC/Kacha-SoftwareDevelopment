@@ -1,0 +1,184 @@
+---
+/**
+ * Proceso de trabajo: las notas de colores con chincheta, firma del sitio original.
+ * En escritorio forman una fila ondulada unida por una línea punteada; en móvil se apilan.
+ */
+import { steps } from '../data/process';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import SectionHead from './SectionHead.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const [before, accent, after] = t.process.title;
+---
+
+<section id={t.ids.process} class="theme-dark bg-bg text-fg py-24 lg:py-36 overflow-hidden" aria-labelledby="process-title">
+  <div class="shell">
+    <SectionHead label={t.process.label} title={before} accent={accent} after={after} id="process-title" size="md">
+      {t.process.intro}
+    </SectionHead>
+  </div>
+
+  <div class="board shell relative mt-16 lg:mt-24">
+    <svg class="thread" viewBox="0 0 1000 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M100 0 C 200 0, 200 80, 300 80 S 400 0, 500 0 S 600 80, 700 80 S 800 0, 900 0" />
+    </svg>
+    <ol class="notes" data-reveal-group>
+      {
+        steps[lang].map((step, i) => (
+          <li class="note" style={`--r:${step.rotate}deg; --c:${step.color}; --i:${i}`}>
+            <span class="pin" aria-hidden="true" />
+            <div class="note-outer">
+              <div class="note-inner">
+                <div class="flex items-start justify-between gap-3">
+                  <span class="note-id">{step.id}</span>
+                  <span class="note-when">{step.when}</span>
+                </div>
+                <h3 class="note-title">{step.title}</h3>
+                <p class="note-desc">{step.description}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .notes {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+  .note {
+    position: relative;
+  }
+  .note-outer {
+    background: #0c0d0d;
+    border-radius: 24px;
+    padding: 0.8rem;
+    box-shadow:
+      #fff 0 0 0 2px,
+      rgb(255 255 255 / 0.14) 0 11px 30px 0;
+    transform: rotate(var(--r));
+    transition:
+      transform 0.7s var(--ease-out-expo),
+      box-shadow 0.7s var(--ease-out-expo);
+  }
+  .note-inner {
+    background: var(--c);
+    color: #000;
+    border-radius: 16px;
+    padding: 1rem 1.1rem 1.25rem;
+    min-height: 12.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .note-id {
+    font-family: var(--font-hand);
+    font-size: 2.6rem;
+    line-height: 0.9;
+  }
+  .note-when {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.45em 0.7em;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.08);
+    white-space: nowrap;
+  }
+  .note-title {
+    margin-top: 0.9rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .note-desc {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #2b2b2b;
+  }
+  .pin {
+    position: absolute;
+    z-index: 2;
+    top: -9px;
+    left: 50%;
+    width: 22px;
+    height: 22px;
+    margin-left: -11px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, #7dffd0, var(--color-accent) 45%, #009e6a);
+    box-shadow:
+      0 0 0 3px #000,
+      0 6px 12px rgb(0 0 0 / 0.6);
+  }
+  .thread {
+    display: none;
+  }
+  @media (hover: hover) {
+    .note:hover .note-outer {
+      transform: rotate(0deg) translateY(-8px) scale(1.03);
+      box-shadow:
+        var(--color-accent) 0 0 0 2px,
+        rgb(0 229 153 / 0.28) 0 18px 50px 0;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .notes {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 44rem;
+      gap: 2.5rem 2rem;
+    }
+    .note:nth-child(even) {
+      margin-top: 3rem;
+    }
+    .note:last-child {
+      grid-column: 1 / -1;
+      width: calc(50% - 1rem);
+      margin-inline: auto;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .notes {
+      grid-template-columns: repeat(5, 1fr);
+      max-width: none;
+      gap: clamp(0.9rem, 1.6vw, 1.75rem);
+      align-items: start;
+    }
+    .note:nth-child(even) {
+      margin-top: 5rem;
+    }
+    .note:last-child {
+      grid-column: auto;
+      width: auto;
+      margin-inline: 0;
+    }
+    .thread {
+      display: block;
+      position: absolute;
+      inset: 2px var(--gutter) auto;
+      width: calc(100% - var(--gutter) * 2);
+      height: 5rem;
+      overflow: visible;
+    }
+    .thread path {
+      fill: none;
+      stroke: rgb(255 255 255 / 0.28);
+      stroke-width: 1.5;
+      stroke-dasharray: 6 8;
+      vector-effect: non-scaling-stroke;
+    }
+  }
+</style>

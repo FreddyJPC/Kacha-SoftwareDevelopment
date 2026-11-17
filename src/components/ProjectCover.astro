@@ -1,0 +1,54 @@
+---
+/**
+ * Portada de proyecto. Usa la imagen si existe; si no, genera una portada
+ * tipográfica con la aurora de marca (útil para proyectos sin capturas).
+ */
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  sizes?: string;
+  eager?: boolean;
+}
+const { project, sizes = '(min-width: 1024px) 50vw, 100vw', eager = false } = Astro.props;
+const { cover, client, title, year } = project.data;
+const t = useTranslations(getLang(Astro));
+// Variación estable del degradado según el nombre
+const seed = [...project.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+const pos = [`${20 + (seed % 60)}% 115%`, `${110 - (seed % 40)}% ${10 + (seed % 50)}%`];
+---
+
+{
+  cover ? (
+    <Image
+      src={cover}
+      alt={`${t.common.coverAlt} ${title}`}
+      widths={[640, 960, 1280, 1920]}
+      sizes={sizes}
+      class="cover-media w-full h-full object-cover object-center"
+      loading={eager ? 'eager' : 'lazy'}
+    />
+  ) : (
+    <div class="cover-media gen grain theme-dark relative w-full h-full overflow-hidden bg-surface text-fg" style={`--p1:${pos[0]};--p2:${pos[1]}`}>
+      <div class="absolute inset-0 flex flex-col justify-between p-[6%]">
+        <p class="label text-fg/80 self-end">{year}</p>
+        <p class="display text-[clamp(2.5rem,9cqw,7rem)] leading-[0.86]">
+          {client}
+          <span class="dot">.</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .gen {
+    container-type: inline-size;
+    background:
+      radial-gradient(70% 80% at var(--p1), var(--color-mint) 0%, var(--color-accent) 22%, var(--color-pine) 48%, transparent 78%),
+      radial-gradient(50% 60% at var(--p2), rgb(0 100 255 / 0.45) 0%, transparent 70%), #070908;
+  }
+</style>

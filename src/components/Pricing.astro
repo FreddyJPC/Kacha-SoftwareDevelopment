@@ -1,316 +1,36 @@
 ---
-const pricingPlans = [
-  {
-    title: "Básico",
-    price: "$50 - $150",
-    features: [ "Landing Pages", "Páginas Informativas", "Portafolios", "Diseños en Figma" ],
-    cta: "Elegir Básico",
-    popular: false
-  },
-  {
-    title: "Intermedio",
-    price: "$200 - $500",
-    features: [ "Sitios Webs Corporativos", "Chatbots con IA", "Blogs", "Integración de Pagos" ],
-    cta: "Elegir Intermedio",
-    popular: true 
-  },
-  {
-    title: "Avanzado",
-    price: "$600 - $1000",
-    features: [ "Aplicaciones Web a Medida", "CRM / ERP", "Tiendas Ecommerce", "Sistemas Complejos" ],
-    cta: "Elegir Avanzado",
-    popular: false
-  }
-];
+/** Sección de precios de la portada: planes + nota + acceso a la página completa. */
+import { pricingNote } from '../data/pricing';
+import { getLang, localePath } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Button from './Button.astro';
+import PlanCards from './PlanCards.astro';
+import SectionHead from './SectionHead.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const [before, accent, after] = t.pricing.customTitle;
 ---
 
-<section class="pricing-section" id="precios">
-  <div class="bg-glow"></div>
+<section id={t.ids.pricing} class="shell pt-24 lg:pt-36 pb-20 lg:pb-28" aria-labelledby="pricing-title">
+  <SectionHead label={t.pricing.label} title={t.pricing.title} id="pricing-title">
+    {t.pricing.intro}
+  </SectionHead>
 
-  <div class="pricing-header reveal-text">
-    <h2 class="neon-title">Precios</h2>
-    <p class="subtitle">
-      Transparencia total. Planes escalables que crecen junto con tu proyecto.
-    </p>
+  <div class="mt-14 lg:mt-24">
+    <PlanCards />
   </div>
 
-  <div class="pricing-grid">
-    {pricingPlans.map((plan, index) => (
-      <div 
-        class={`pricing-card reveal-card ${plan.popular ? "popular-card" : ""}`}
-        style={`--delay: ${index * 150}ms`}
-      >
-        {plan.popular && <span class="popular-badge">Más Popular</span>}
-        
-        <div class="card-header">
-          <h3 class="plan-title">{plan.title}</h3>
-          <div class="price">{plan.price}</div>
-          <p class="price-note">Pago único / Por proyecto</p>
-        </div>
-
-        <ul class="features-list">
-          {plan.features.map((feature) => (
-            <li>
-              <span class="check-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span> 
-              {feature}
-            </li>
-          ))}
-        </ul>
-        
-        <!-- CAMBIO: Botón ahora es enlace -->
-        <a href="/contacto" class="cta-button">{plan.cta}</a>
-      </div>
-    ))}
-  </div>
-
-  <div class="custom-plan reveal-up">
-    <div class="custom-icon">✨</div>
-    <div class="custom-plan-texts">
-      <h3>¿Necesitas algo único?</h3>
-      <p>Cuéntanos tu idea loca y nosotros nos encargamos de la ingeniería.</p>
+  <div class="custom mt-2 lg:mt-6 rounded-[calc(var(--radius-panel)*0.8)] bg-surface p-7 lg:p-9 flex flex-wrap items-center justify-between gap-x-10 gap-y-6" data-reveal>
+    <div class="max-w-2xl">
+      <h3 class="text-2xl lg:text-[1.9rem] font-bold tracking-[-0.035em] leading-[1.05]">{before}<span class="accent font-normal text-[1.08em]">{accent}</span>{after}</h3>
+      <p class="mt-2 text-muted text-lg leading-snug">{t.pricing.customText}</p>
     </div>
-    <div class="custom-plan-button">
-      <!-- CAMBIO: Botón ahora es enlace -->
-      <a href="/contacto" class="talk-button">Cotizar a Medida</a>
+    <div class="flex flex-wrap gap-3">
+      <Button href={localePath(lang, 'contact')} variant="solid">{t.pricing.customCta}</Button>
+      <Button href={localePath(lang, 'pricing')} variant="ghost">{t.pricing.allPlans}</Button>
     </div>
   </div>
+
+  <p class="mt-6 text-sm text-muted" data-reveal>{pricingNote[lang]}</p>
 </section>
-
-<style>
-  :root {
-    --color-accent: #00E599;
-    --font-primary: 'Satoshi', sans-serif;
-    --bg-card: #0c0d0d;
-    --bg-card-hover: #121212;
-  }
-  .nav-action .cta-button {
-    text-decoration: none !important;
-  }
-  .pricing-section {
-    position: relative;
-    color: #fff;
-    text-align: center;
-    padding: 6rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    min-height: 800px;
-    overflow: hidden;
-    z-index: 999;
-  }
-
-  .bg-glow {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(0, 229, 153, 0.08) 0%, rgba(0,0,0,0) 70%);
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  /* Header */
-  .pricing-header {
-    margin-bottom: 1rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .pricing-header.active { opacity: 1; transform: translateY(0); }
-
-  .neon-title {
-    font-family: var(--font-primary, sans-serif);
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(0, 229, 153, 0.3);
-  }
-  
-  .subtitle {
-    font-family: var(--font-primary);
-    font-size: 1.1rem;
-    color: #a1a1aa;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  /* Grid */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    align-items: stretch;
-  }
-
-  .pricing-card {
-    background-color: var(--bg-card);
-    border: 1px solid #27272a;
-    border-radius: 16px;
-    width: 100%;
-    padding: 2.5rem 2rem;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    transition: all 0.4s ease;
-    opacity: 0;
-    transform: translateY(30px);
-    transition-delay: var(--delay);
-  }
-
-  .pricing-card.active { opacity: 1; transform: translateY(0); }
-
-  .pricing-card:hover {
-    border-color: #3f3f46;
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-    background-color: var(--bg-card-hover);
-  }
-
-  .popular-card {
-    border: 1px solid var(--color-accent);
-    box-shadow: 0 0 30px rgba(0, 229, 153, 0.1);
-  }
-  .popular-card:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 40px rgba(0, 229, 153, 0.2);
-  }
-
-  .popular-badge {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--color-accent);
-    color: #000;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 0.3rem 1rem;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: var(--font-primary);
-  }
-
-  .card-header { border-bottom: 1px solid #27272a; padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-  .plan-title { font-family: var(--font-primary); font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; }
-  .price { font-family: var(--font-primary); font-weight: 700; font-size: 2rem; color: #fff; margin-bottom: 0.25rem; }
-  .price-note { font-size: 0.85rem; color: #71717a; margin: 0; }
-
-  .features-list {
-    list-style: none; padding: 0; margin: 0 0 2rem; text-align: left; flex-grow: 1;
-  }
-  .features-list li {
-    margin: 0.8rem 0; color: #d4d4d8; font-family: var(--font-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 0.75rem;
-  }
-
-  .check-icon {
-    display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; min-width: 20px;
-    background-color: rgba(0, 229, 153, 0.1); border-radius: 50%; color: var(--color-accent);
-  }
-  .check-icon svg { width: 12px; height: 12px; }
-
-  /* ESTILOS DE LOS BOTONES (Enlaces) */
-  .cta-button {
-    text-decoration: none;
-    display: block;
-    width: 100%;
-    background-color: transparent;
-    color: #fff;
-    border: 1px solid #3f3f46;
-    border-radius: 8px;
-    padding: 0.8rem;
-    cursor: pointer;
-    font-family: var(--font-primary);
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-
-  .pricing-card:hover .cta-button {
-    background-color: #fff; color: #000; border-color: #fff;
-  }
-
-  .popular-card .cta-button {
-    background-color: var(--color-accent); color: #000; border: none;
-  }
-  .popular-card:hover .cta-button {
-    background-color: #00c985; color: #000;
-  }
-
-  /* CUSTOM PLAN */
-  .custom-plan {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 2rem 3rem;
-    width: 90%;
-    max-width: 900px;
-    margin: 0 auto;
-    border: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.8s ease;
-  }
-  .custom-plan.active { opacity: 1; transform: translateY(0); }
-
-  .custom-icon {
-    font-size: 2.5rem;
-    background: linear-gradient(135deg, #fff 0%, #666 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .custom-plan-texts { text-align: left; flex-grow: 1; }
-  .custom-plan h3 { font-family: var(--font-primary); font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
-  .custom-plan p { font-family: var(--font-primary); color: #a1a1aa; margin: 0; line-height: 1.5; }
-
-  /* Botón "Hablemos" estilo */
-  .talk-button {
-    text-decoration: none;
-    display: inline-block;
-    background-color: transparent;
-    color: #fff;
-    border: 1px solid #fff;
-    border-radius: 50px;
-    padding: 0.75rem 2rem;
-    cursor: pointer;
-    font-family: var(--font-primary);
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-  .talk-button:hover {
-    background-color: #fff; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.3);
-  }
-
-  @media (max-width: 960px) {
-    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
-    .custom-plan { flex-direction: column; text-align: center; gap: 1.5rem; }
-    .custom-plan-texts { text-align: center; }
-  }
-</style>
-
-<script type="module" is:client>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal-text, .reveal-card, .reveal-up').forEach((el) => {
-    observer.observe(el);
-  });
-</script>

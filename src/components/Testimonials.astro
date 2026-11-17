@@ -1,0 +1,60 @@
+---
+/** Testimonios sobre un bloque verde. Si no hay testimonios en src/data/testimonials.ts, no se muestra. */
+import { testimonials as all } from '../data/testimonials';
+import { getLang } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+import Star from './Star.astro';
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const testimonials = all[lang];
+---
+
+{
+  testimonials.length > 0 && (
+    <section class="theme-dark px-[var(--inset)] pb-[var(--inset)]" aria-labelledby="testimonials-title">
+      <div class="theme-accent bg-bg text-fg rounded-[var(--radius-panel)] shell py-16 lg:py-24 relative overflow-hidden">
+        <Star class="deco absolute -right-[6vw] -top-[6vw] w-[34vw] h-[34vw] max-w-[30rem] max-h-[30rem] text-black/[0.07]" />
+        <div class="relative grid grid-cols-12 gap-x-6 gap-y-10">
+          <div class="col-span-12 lg:col-span-3">
+            <h2 id="testimonials-title" class="label label-star" data-reveal>{t.testimonials.label}</h2>
+          </div>
+          <div class="col-span-12 lg:col-span-9">
+            <blockquote>
+              <p class="lead" data-words>“{testimonials[0].quote}”</p>
+              <footer class="mt-8 flex items-center gap-3" data-reveal>
+                <span class="w-10 h-px bg-black/40" />
+                <span class="font-medium">{testimonials[0].author}</span>
+                <span class="text-muted">— {testimonials[0].role}</span>
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+
+        {testimonials.length > 1 && (
+          <div class="relative mt-14 lg:mt-20 grid md:grid-cols-2 gap-2" data-reveal-group>
+            {testimonials.slice(1).map((t) => (
+              <blockquote class="quote rounded-[calc(var(--radius-panel)*0.7)] p-7 lg:p-9 flex flex-col justify-between gap-10">
+                <p class="text-xl lg:text-2xl font-medium tracking-[-0.025em] leading-[1.25]">“{t.quote}”</p>
+                <footer class="flex flex-wrap items-baseline gap-x-2">
+                  <span class="font-medium">{t.author}</span>
+                  <span class="text-muted">— {t.role}</span>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .quote {
+    background: rgb(0 0 0 / 0.08);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+  }
+  .deco {
+    animation: spin-slow 60s linear infinite;
+  }
+</style>
